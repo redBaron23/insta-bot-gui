@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import {
   Avatar,
   Button,
+  Grid,
   Card,
   CardContent,
   CardActions,
@@ -10,38 +11,44 @@ import {
 } from "@material-ui/core";
 
 const styles = {
+  root:{
+    maxWidth:300
+  },
   card: {
-    display: "flex",
+    display: "flex"
+  },
+  first: {
+    maxWidth: 225
   },
   profile: {
-    display:'flex',
-    alignItems:'center',
-    justifyContent:'spaceBetween'
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "spaceBetween"
   },
   avatar: {
-    marginRight:15
+    marginRight: 15
   }
 };
 
 export default class UserCard extends Component {
   render() {
+    const { name, src } = this.props;
     return (
-      <Card style={styles.card}>
-        <CardActionArea>
-          <CardContent style={styles.profile}>
-            <Avatar style={styles.avatar}
-              alt="Juancho Tacorta"
-              src="https://happytravel.viajes/wp-content/uploads/2020/04/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-            />{" "}
-            <Typography variant="body2" color="textSecondary" component="p">
-              Juancho Tacorta
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-        <CardActions>
-          <Button>Follow</Button>
-        </CardActions>
-      </Card>
+      <Grid style={styles.root} xs={12} sm={3} md={3}>
+        <Card variant="outlined" style={styles.card}>
+          <CardActionArea style={styles.first}>
+            <CardContent style={styles.profile}>
+              <Avatar style={styles.avatar} alt="Juancho Tacorta" src={src} />{" "}
+              <Typography variant="body2" color="textSecondary" component="p">
+                {name}
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+          <CardActions>
+            <Button>Follow</Button>
+          </CardActions>
+        </Card>
+      </Grid>
     );
   }
 }
