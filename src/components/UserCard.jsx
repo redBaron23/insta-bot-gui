@@ -34,7 +34,7 @@ export default class UserCard extends Component {
   render() {
     const { name, src } = this.props;
     return (
-      <Grid style={styles.root} xs={12} sm={3} md={3}>
+      <Grid  item style={styles.root} xs={12} sm={3} md={3}>
         <Card variant="outlined" style={styles.card}>
           <CardActionArea style={styles.first}>
             <CardContent style={styles.profile}>
