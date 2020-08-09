@@ -14,6 +14,7 @@ const styles = makeStyles(theme => ({
   toolbar: theme.mixins.toolbar,
   content: {
     display: 'flex',
+    paddingTop: 75,
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing(3)
@@ -53,8 +54,7 @@ const Main = () => {
       <div className={classes.content}>
         <div className={classes.toolbar}>
           <Grid container>
-            <Box>HOLA paper como estas lalalalalalalal</Box>
-            <Box>HOLA paper como estas lalalalalalalal</Box>
+	    <Content />
           </Grid>
         </div>
       </div>

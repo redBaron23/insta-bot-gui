@@ -34,7 +34,7 @@ export default function NavBar(props) {
   const classes = useStyles();
   const { onClick } = props
   return (
-    <AppBar position="fixed" className={classes.appBar}>
+    <AppBar  className={classes.appBar} position='fixed' >
       <Toolbar>
         <IconButton
           edge="start"
