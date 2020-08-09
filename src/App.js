@@ -10,13 +10,11 @@ class App extends Component {
   render() {
     const { route } = this.state;
     return (
-      <div className="App">
         <ThemeProvider >
           <Main />
 	  {/*route === "LogIn" && <LoginForm />}
 	  {route === "Main" && <Main />*/}
 	  </ThemeProvider>
-      </div>
     );
   }
 }
