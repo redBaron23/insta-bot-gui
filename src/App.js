@@ -1,19 +1,26 @@
 import React, { Component } from "react";
 import "./App.css";
-import Main from "./views/Main.jsx";
+import Main from "./views/Main";
+import LogIn from './views/LogIn'
 import { ThemeProvider } from "@material-ui/core/styles";
 
 class App extends Component {
   state = {
-    route: "Main"
+    logged: false
   };
+  
   render() {
-    const { route } = this.state;
+    const { logged } = this.state;
+
+    const handleLogin = () => {
+      this.setState({
+	logged:!logged
+      })
+    }
     return (
         <ThemeProvider >
-          <Main />
-	  {/*route === "LogIn" && <LoginForm />}
-	  {route === "Main" && <Main />*/}
+	  {logged === false && <LogIn success={handleLogin}/>}
+	  {logged === true && <Main logout={handleLogin}/>}
 	  </ThemeProvider>
     );
   }

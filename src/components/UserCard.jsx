@@ -12,10 +12,10 @@ import {
 
 const styles = {
   root:{
-    maxWidth:300
+    maxWidth:350
   },
   card: {
-    display: "flex"
+    display: "flex",
   },
   first: {
     maxWidth: 225
