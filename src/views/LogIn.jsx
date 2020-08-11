@@ -30,7 +30,7 @@ const styles = makeStyles(theme => ({
 const LogIn = (props) => {
 
 
-  const { success } = props
+  const { onLogin } = props
   const [mobileOpen, setMobileOpen] = useState(false);
     const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -56,7 +56,8 @@ const LogIn = (props) => {
       <div className={classes.content}>
         <div className={classes.toolbar}>
           <Grid container>
-	    <LoginForm success={success} />
+	    <LoginForm onLogin={onLogin} />
+
           </Grid>
         </div>
       </div>
