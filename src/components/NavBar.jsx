@@ -15,9 +15,9 @@ const useStyles = makeStyles(theme => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
-    [theme.breakpoints.up('sm')]: {
-      display: 'none',
-    },
+    [theme.breakpoints.up("sm")]: {
+      display: "none"
+    }
   },
   title: {
     flexGrow: 1
@@ -32,23 +32,25 @@ const useStyles = makeStyles(theme => ({
 
 export default function NavBar(props) {
   const classes = useStyles();
-  const { onClick } = props
+  const { onClick, logout } = props;
   return (
-    <AppBar  className={classes.appBar} position='fixed' >
+    <AppBar className={classes.appBar} position="fixed">
       <Toolbar>
         <IconButton
           edge="start"
           className={classes.menuButton}
           color="inherit"
           aria-label="menu"
-	  onClick={ () => onClick() }
+          onClick={() => onClick()}
         >
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" className={classes.title}>
           Insta Bot
         </Typography>
-        <Button color="inherit">Login</Button>
+        <Button color="inherit" onClick={e => logout()}>
+          {!logout ? "LOGIN" : "LOGOUT"}
+        </Button>
       </Toolbar>
     </AppBar>
   );
