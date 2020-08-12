@@ -34,11 +34,11 @@ class App extends Component {
   render() {
     const { logged } = this.state;
 
+    const handleLogout = () => this.setState({ logged: false });
     const handleLogin = () => {
       this.setState({
         logged: !logged
       });
-      console.log("GOING",this.state.logged);
     };
     return (
       <ThemeProvider>
@@ -49,11 +49,17 @@ class App extends Component {
             <SecuredRoute
               path="/home"
               isLogged={logged}
-              render={props => <Main {...props} />}
+              render={props => <Main onLogout={handleLogout} {...props} />}
             ></SecuredRoute>
             <Route
               path="/"
-	      render={props => (!logged) ? <LogIn onLogin={handleLogin} {...props} /> : <Redirect to='/home' />}
+              render={props =>
+                !logged ? (
+                  <LogIn onLogin={handleLogin} {...props} />
+                ) : (
+                  <Redirect to="/home" />
+                )
+              }
             ></Route>
           </Switch>
         </Router>
