@@ -103,7 +103,7 @@ export default function LogIn(props) {
     if (backend) {
       //LOGEADO
       console.log('logead')
-      onLogin()
+      onLogin(account.username,account.password)
     } else {
       let message = 'Incorrect username or password'
 

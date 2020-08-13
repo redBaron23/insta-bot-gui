@@ -10,6 +10,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import { Account } from "./fun/account";
 
 const SecuredRoute = props => {
   return (
@@ -34,11 +35,23 @@ class App extends Component {
   render() {
     const { logged } = this.state;
 
+    const keepAccount = async (data, account) => {
+      if (data) {
+        let status = await account.setData(data);
+        if (status) {
+          localStorage.setItem("account", account);
+          this.setState({ logged: true });
+        }
+        console.log(account);
+      }
+    };
     const handleLogout = () => this.setState({ logged: false });
-    const handleLogin = () => {
-      this.setState({
-        logged: !logged
-      });
+    const handleLogin = (username, password) => {
+      let account = new Account(username, password);
+      account
+        .init()
+        .then(res => keepAccount(res.data, account))
+        .catch(e => console.log(e));
     };
     return (
       <ThemeProvider>
