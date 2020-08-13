@@ -77,7 +77,11 @@ export default function LogIn(props) {
     const { name, value } = e.target;
     name === "username" ? setUsername(value) : setPassword(value);
   };
-
+  const customAlert = (message, type) => {
+    setNotificationMessage(message);
+    setNotificationSeverity(type);
+    setOpenNotification(true);
+  };
   const handleSubmit = e => {
     let status = true;
     //No refresh
@@ -90,27 +94,25 @@ export default function LogIn(props) {
       !account.username ? setUsernameError(true) : setUsernameError(false);
       !account.password ? setPasswordError(true) : setPasswordError(false);
 
-      setNotificationMessage(message);
-      setNotificationSeverity("error");
-      setOpenNotification(true);
+      customAlert(message, "error");
     }
   };
 
-  const isMatch = ( account ) => {
+  const isMatch = account => {
     //Send to backend
     let backend = true;
 
     if (backend) {
       //LOGEADO
-      console.log('logead')
-      onLogin(account.username,account.password)
+      console.log("logead");
+      onLogin(account.username, account.password,customAlert);
     } else {
-      let message = 'Incorrect username or password'
+      let message = "Incorrect username or password";
 
       setUsernameError(true);
-      setPasswordError(true)
-      setNotificationMessage(message)
-      setNotificationSeverity('error')
+      setPasswordError(true);
+      setNotificationMessage(message);
+      setNotificationSeverity("error");
       setOpenNotification(true);
       return false;
     }
