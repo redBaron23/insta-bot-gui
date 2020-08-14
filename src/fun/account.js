@@ -147,7 +147,19 @@ class Account {
   }
 
   async unfollow(userName) {
-    const userId = await this.getUserId(userName);
+    try {
+      let myAccount = await this.export();
+      let req = {
+        data: myAccount,
+        userName: userName
+      };
+      console.log("Antes del request");
+      let res = await axios.post(backUri + "/unfollow", req);
+      return res.data.status === 200;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
   }
 
   async getUsers(QUERY_HASH, userName, quantity) {
