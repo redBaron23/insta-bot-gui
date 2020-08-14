@@ -25,7 +25,6 @@ function Copyright() {
         redbaron23
       </Link>{" "}
       {new Date().getFullYear()}
-      {"."}
     </Typography>
   );
 }
@@ -171,8 +170,9 @@ export default function LogIn(props) {
             fullWidth
             variant="contained"
             color="primary"
+	    disabled={(username.length < 6) || (password.length < 6)}
             //onClick={() => success()}
-            onClick={handleSubmit}
+	    onClick={handleSubmit}
             className={classes.submit}
           >
             Log In
