@@ -12,7 +12,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
-
+import UserCard from "./UserCard";
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -56,9 +56,10 @@ export default function LogIn(props) {
   const [passwordError, setPasswordError] = useState(false);
   const [usernameError, setUsernameError] = useState(false);
 
-  const [openNotification, setOpenNotification] = React.useState(false);
-  const [notificationMessage, setNotificationMessage] = React.useState("");
-  const [notificationSeverity, setNotificationSeverity] = React.useState("");
+  const [loading, setLoading] = useState(false);
+  const [openNotification, setOpenNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
+  const [notificationSeverity, setNotificationSeverity] = useState("");
 
   const handleClick = () => {
     setOpenNotification(true);
@@ -82,18 +83,21 @@ export default function LogIn(props) {
     setOpenNotification(true);
   };
   const handleSubmit = e => {
-    let status = true;
-    //No refresh
-    e.preventDefault();
-    let account = { username, password };
-    if (account.username && account.password) {
-      status = isMatch(account);
-    } else {
-      let message = "No username or password detected";
-      !account.username ? setUsernameError(true) : setUsernameError(false);
-      !account.password ? setPasswordError(true) : setPasswordError(false);
+    if (!loading) {
+      setLoading(true)
+      let status = true;
+      //No refresh
+      e.preventDefault();
+      let account = { username, password };
+      if (account.username && account.password) {
+        status = isMatch(account);
+      } else {
+        let message = "No username or password detected";
+        !account.username ? setUsernameError(true) : setUsernameError(false);
+        !account.password ? setPasswordError(true) : setPasswordError(false);
 
-      customAlert(message, "error");
+        customAlert(message, "error");
+      }
     }
   };
 
@@ -103,7 +107,7 @@ export default function LogIn(props) {
 
     if (backend) {
       //LOGEADO
-      onLogin(account.username, account.password,customAlert);
+      onLogin(account.username, account.password, customAlert,setLoading)
     } else {
       let message = "Incorrect username or password";
 
@@ -132,6 +136,10 @@ export default function LogIn(props) {
         </Alert>
       </Snackbar>
       <div className={classes.paper}>
+        <UserCard
+          userName="Paper"
+          src="https://happytravel.viajes/wp-content/uploads/2020/04/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
+        />
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
@@ -170,9 +178,8 @@ export default function LogIn(props) {
             fullWidth
             variant="contained"
             color="primary"
-	    disabled={(username.length < 6) || (password.length < 6)}
-            //onClick={() => success()}
-	    onClick={handleSubmit}
+            disabled={(username.length < 6 || password.length < 6) || (loading)}
+            onClick={handleSubmit}
             className={classes.submit}
           >
             Log In

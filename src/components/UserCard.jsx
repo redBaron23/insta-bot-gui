@@ -13,10 +13,10 @@ import { withStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import Rating from "@material-ui/lab/Rating";
 import axios from "axios";
+import { Account } from "../fun/account";
 
-
-
-const defaultSrc = 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/1200px-User_font_awesome.svg.png'
+const defaultSrc =
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/1200px-User_font_awesome.svg.png";
 const StyledRating = withStyles({
   iconFilled: {
     color: "#ff6d75"
@@ -50,18 +50,37 @@ const styles = {
 export default function UserCard(props) {
   const { userName } = props;
   const [src, setSrc] = useState(false);
-
+  const [buttonText, setButtonText] = useState("Unfollow");
+  const [buttonDisabled, setButtonDisabled] = useState(false);
   useEffect(() => {
     getImage();
   }, []);
 
-  const getImage = () => {
-    const uri = 'https://www.instagram.com/'+userName+'/?__a=1'
-    axios.get(uri)
-      .then( res => res.data.graphql.user.profile_pic_url_hd)
-      .then( pic => setSrc(pic))
+  const buttonHandle = () => {
+    let newText;
+    const data = localStorage.getItem("account");
+    const json = JSON.parse(data);
+    const account = new Account(json.userName, "NoPass");
+    account.import(json);
 
-      .catch( e => setSrc(defaultSrc))
+    if (buttonText === "Unfollow") {
+      newText = "Follow";
+      account.unfollow(userName).then(setButtonDisabled(false));
+    } else {
+      newText = "Unfollow";
+      account.follow(userName).then(setButtonDisabled(false));
+    }
+    setButtonDisabled(true);
+    setButtonText(newText);
+  };
+  const getImage = () => {
+    const uri = "https://www.instagram.com/" + userName + "/?__a=1";
+    axios
+      .get(uri)
+      .then(res => res.data.graphql.user.profile_pic_url_hd)
+      .then(pic => setSrc(pic))
+
+      .catch(e => setSrc(defaultSrc));
   };
   return (
     <Grid item style={styles.root} xs={12} sm={3} md={3}>
@@ -74,16 +93,28 @@ export default function UserCard(props) {
               defaultValue={0}
               icon={<FavoriteIcon fontSize="inherit" />}
             />
-	    <CardActionArea style={styles.profile} onClick={() => window.open('https://instagram.com/'+userName,'_blank')}>
-            <Avatar style={styles.avatar} alt="Juancho Tacorta" src={src} />{" "}
-            <Typography variant="body2" color="textSecondary" component="p">
-              {userName}
-            </Typography>
-	    </CardActionArea>
+            <CardActionArea
+              style={styles.profile}
+              onClick={() =>
+                window.open("https://instagram.com/" + userName, "_blank")
+              }
+            >
+              <Avatar style={styles.avatar} alt="Juancho Tacorta" src={src} />{" "}
+              <Typography variant="body2" color="textSecondary" component="p">
+                {userName}
+              </Typography>
+            </CardActionArea>
           </CardContent>
         </div>
         <CardActions>
-          <Button variant='outlined' color='secondary'>Unfollow</Button>
+          <Button
+            variant="outlined"
+            disabled={buttonDisabled}
+            color="secondary"
+            onClick={buttonHandle}
+          >
+            {buttonText}
+          </Button>
         </CardActions>
       </Card>
     </Grid>
