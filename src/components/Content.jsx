@@ -42,9 +42,10 @@ export default function Content() {
   };
   return (
     <Grid container styles={classes.root} spacing={2}>
+      <h1>Total: {garcas.length}</h1>
       {garcas.map(i => (
         <UserCard
-          name={i}
+          userName={i}
           src="https://happytravel.viajes/wp-content/uploads/2020/04/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
         />
       ))}

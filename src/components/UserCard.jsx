@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Avatar,
   Button,
@@ -12,7 +12,11 @@ import {
 import { withStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import Rating from "@material-ui/lab/Rating";
+import axios from "axios";
 
+
+
+const defaultSrc = 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/User_font_awesome.svg/1200px-User_font_awesome.svg.png'
 const StyledRating = withStyles({
   iconFilled: {
     color: "#ff6d75"
@@ -38,27 +42,41 @@ const styles = {
     justifyContent: "spaceBetween"
   },
   avatar: {
-    marginLeft:15,
+    marginLeft: 15,
     marginRight: 25
   }
 };
 
 export default function UserCard(props) {
-  const { name, src } = props;
+  const { userName } = props;
+  const [src, setSrc] = useState(false);
+
+  useEffect(() => {
+    getImage();
+  }, []);
+
+  const getImage = () => {
+    const uri = 'https://www.instagram.com/'+userName+'/?__a=1'
+    axios.get(uri)
+      .then( res => res.data.graphql.user.profile_pic_url_hd)
+      .then( pic => setSrc(pic))
+
+      .catch( e => setSrc(defaultSrc))
+  };
   return (
     <Grid item style={styles.root} xs={12} sm={3} md={3}>
       <Card variant="outlined" style={styles.card}>
         <CardActionArea style={styles.first}>
           <CardContent style={styles.profile}>
-	    <StyledRating 
+            <StyledRating
               name="customized-color"
-	      max={1}
+              max={1}
               defaultValue={0}
               icon={<FavoriteIcon fontSize="inherit" />}
             />
             <Avatar style={styles.avatar} alt="Juancho Tacorta" src={src} />{" "}
             <Typography variant="body2" color="textSecondary" component="p">
-              {name}
+              {userName}
             </Typography>
           </CardContent>
         </CardActionArea>
