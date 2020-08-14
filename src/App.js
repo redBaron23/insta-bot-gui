@@ -35,23 +35,21 @@ class App extends Component {
   render() {
     const { logged } = this.state;
 
-    const keepAccount = async (data, account,customAlert) => {
-      if (data) {
-        let status = await account.setData(data);
-        if (status) {
-          localStorage.setItem("account", account);
-          this.setState({ logged: true });
-        }
-	customAlert('Wrong password or username','error')
-        console.log(account);
+    const keepAccount = async (data, customAlert) => {
+      if (data.status === 200) {
+        localStorage.setItem("account", JSON.stringify(data.data));
+        this.setState({ logged: true });
+	console.log(data.data)
+      } else {
+        customAlert("Wrong password or username", "error");
       }
     };
     const handleLogout = () => this.setState({ logged: false });
-    const handleLogin = (username, password,customAlert) => {
+    const handleLogin = (username, password, customAlert) => {
       let account = new Account(username, password);
       account
         .init()
-        .then(res => keepAccount(res.data, account,customAlert))
+        .then(res => keepAccount(res, customAlert))
         .catch(e => console.log(e));
     };
     return (

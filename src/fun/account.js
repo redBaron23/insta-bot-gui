@@ -1,7 +1,7 @@
 const axios = require("axios");
 const helper = require("./helper");
 
-const backUri = "http://localhost:1111";
+const backUri = "http://192.168.0.120:1111";
 
 //Followers/Unfollowers per account
 const default_quantity = 10000;
@@ -35,9 +35,19 @@ class Account {
     }
   }
 
-  async setData(data) {
+  export() {
+    let data = {};
+    let cookies = {};
+    cookies.sessionid = this.sessionid;
+    cookies.csrftoken = this.csrftoken;
+    cookies.shbid = this.shbid;
+    data.cookies = cookies;
+    data.userName = this._userName;
+    data.userId = this._userId;
+    return data;
+  }
+  import(data) {
     try {
-      console.log("Aca");
       let cookies = data.cookies;
       this._userId = data.userId;
       this._userName = data.userName;
@@ -61,7 +71,6 @@ class Account {
       headers = {
         headers: { "Access-Control-Allow-Origin": "*" }
       };
-      console.log("Going to api");
       let res = await axios.post(backUri + "/login", acc);
       return res.data;
     } catch (e) {
@@ -103,23 +112,42 @@ class Account {
     console.log("Following: " + this._totalFollowing);
   }
 
+  async getGarcas(whiteList) {
+    //A garca is who you follow but it didn't follow you back
+    try {
+      let res, data;
+      let myAccount = await this.export();
+      let req = {
+        data: myAccount,
+        whiteList: whiteList
+      };
+      console.log("Antes del request");
+      res = await axios.post(backUri + "/garcas", req);
+      data = res.data;
+      return data.status === 200 ? data.garcas : false;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  }
   async follow(userName) {
-    const userId = await this.getUserId(userName);
-
-    const URL =
-      "https://www.instagram.com/web/friendships/" + userId + "/follow/";
-
-    const res = await this.postData(URL);
+    try {
+      let myAccount = await this.export();
+      let req = {
+        data: myAccount,
+        userName: userName
+      };
+      console.log("Antes del request");
+      let res = await axios.post(backUri + "/follow", req);
+      return res.data.status === 200;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
   }
 
   async unfollow(userName) {
     const userId = await this.getUserId(userName);
-
-    const URL =
-      "https://www.instagram.com/web/friendships/" + userId + "/unfollow/";
-
-    const res = await this.postData(URL);
-    return res.status == "200";
   }
 
   async getUsers(QUERY_HASH, userName, quantity) {
@@ -233,65 +261,6 @@ class Account {
     };
   }
 
-  async postData(URL) {
-    const HEADERS = {
-      Accept: "*/*",
-      Cookie:
-        "sessionid=" + this._sessionid.value + "; shbid=" + this._shbid.value,
-      "User-Agent":
-        "Mozilla/5.0 (X11; Linux x86_64; rv:77.0) Gecko/20100101 Firefox/77.0",
-      "Accept-Language": "en-US,en;q=0.5",
-      "Accept-Encoding": "gzip, deflate",
-      "X-CSRFToken": this._csrftoken.value,
-      "X-IG-App-ID": "936619743392459",
-      "X-IG-WWW-Claim": "hmac.AR1P_tpI9zVx0XXJmn4F6-m5s9I_Uo042hIDFnbA5jIHurbG",
-      "X-Requested-With": "XMLHttpRequest",
-      "X-Instagram-AJAX": "nosirve",
-      Connection: "close",
-      Referer: "https://www.instagram.com/",
-      Host: "www.instagram.com"
-    };
-    const options = {
-      url: URL,
-      method: "POST",
-      headers: HEADERS
-    };
-    try {
-      const response = await axios(options);
-      return response;
-    } catch (e) {
-      if (e.response.status == 429) {
-        console.log(e.response.data);
-        console.log(
-          (
-            "Error 429, TOO MANY REQUEST, waiting " +
-            errTime[429] / (3600 * 1000) +
-            " hours and try it again"
-          ).red
-        );
-        await helper.sleep(errTime[429]);
-        await this.init();
-        let res = await this.getData(URL);
-        return res;
-      } else if (e.response.status == 400) {
-        console.log(e.response.data);
-        console.log(
-          (
-            "Error 400, BAD REQUEST, waiting " +
-            errTime[400] / (3600 * 1000) +
-            " hours and try it again"
-          ).red
-        );
-        await helper.sleep(errTime[400]);
-        await this.init();
-        let res = await this.getData(URL);
-        return res;
-      } else {
-        throw e;
-      }
-    }
-  }
-
   async getData(URL) {
     const HEADERS = {
       Accept: "*/*",
@@ -348,11 +317,6 @@ class Account {
         throw e;
       }
     }
-  }
-
-  async getGarcas(WHITELIST) {
-    //A garca is who you follow but it didn't follow you back
-    return this.getUserGarcas(this._userName, WHITELIST);
   }
 
   async getFans() {
