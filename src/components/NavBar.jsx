@@ -48,7 +48,7 @@ export default function NavBar(props) {
         <Typography variant="h6" className={classes.title}>
           Insta Bot
         </Typography>
-        <Button color="inherit" onClick={e => logout()}>
+	<Button color="inherit" onClick={e => (logout ? logout(): '')}>
           {!logout ? "LOGIN" : "LOGOUT"}
         </Button>
       </Toolbar>
