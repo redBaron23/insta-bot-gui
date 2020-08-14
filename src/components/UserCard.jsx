@@ -66,7 +66,7 @@ export default function UserCard(props) {
   return (
     <Grid item style={styles.root} xs={12} sm={3} md={3}>
       <Card variant="outlined" style={styles.card}>
-        <CardActionArea style={styles.first}>
+        <div style={styles.first}>
           <CardContent style={styles.profile}>
             <StyledRating
               name="customized-color"
@@ -74,14 +74,16 @@ export default function UserCard(props) {
               defaultValue={0}
               icon={<FavoriteIcon fontSize="inherit" />}
             />
+	    <CardActionArea style={styles.profile} onClick={() => window.open('https://instagram.com/'+userName,'_blank')}>
             <Avatar style={styles.avatar} alt="Juancho Tacorta" src={src} />{" "}
             <Typography variant="body2" color="textSecondary" component="p">
               {userName}
             </Typography>
+	    </CardActionArea>
           </CardContent>
-        </CardActionArea>
+        </div>
         <CardActions>
-          <Button>Follow</Button>
+          <Button variant='outlined' color='secondary'>Unfollow</Button>
         </CardActions>
       </Card>
     </Grid>
