@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Proptypes from "prop-types";
 import Avatar from "@material-ui/core/Avatar";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -84,7 +85,7 @@ export default function LogIn(props) {
   };
   const handleSubmit = e => {
     if (!loading) {
-      setLoading(true)
+      setLoading(true);
       let status = true;
       //No refresh
       e.preventDefault();
@@ -107,7 +108,7 @@ export default function LogIn(props) {
 
     if (backend) {
       //LOGEADO
-      onLogin(account.username, account.password, customAlert,setLoading)
+      onLogin(account.username, account.password, customAlert, setLoading);
     } else {
       let message = "Incorrect username or password";
 
@@ -136,10 +137,6 @@ export default function LogIn(props) {
         </Alert>
       </Snackbar>
       <div className={classes.paper}>
-        <UserCard
-          userName="Paper"
-          src="https://happytravel.viajes/wp-content/uploads/2020/04/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-        />
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
@@ -178,11 +175,15 @@ export default function LogIn(props) {
             fullWidth
             variant="contained"
             color="primary"
-            disabled={(username.length < 6 || password.length < 6) || (loading)}
+            disabled={username.length < 6 || password.length < 6 || loading}
             onClick={handleSubmit}
             className={classes.submit}
           >
-            Log In
+	    {'Log'}
+            {loading && (
+              <CircularProgress size={24} className={classes.buttonProgress} />
+            )}
+	    {' In'}
           </Button>
         </form>
       </div>
