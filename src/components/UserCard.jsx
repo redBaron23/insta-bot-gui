@@ -7,7 +7,8 @@ import {
   CardContent,
   CardActions,
   CardActionArea,
-  Typography
+  Typography,
+  Zoom
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -50,6 +51,7 @@ const styles = {
 export default function UserCard(props) {
   const { userName } = props;
   const [src, setSrc] = useState(false);
+  const [show,setShow] = useState(true);
   const [buttonText, setButtonText] = useState("Unfollow");
   const [buttonDisabled, setButtonDisabled] = useState(false);
   useEffect(() => {
@@ -64,9 +66,19 @@ export default function UserCard(props) {
     account.import(json);
 
     if (buttonText === "Unfollow") {
+      const garcas = localStorage.getItem("garcas");
+      const garcasParsed = JSON.parse(garcas);
       newText = "Follow";
-      account.unfollow(userName).then(setButtonDisabled(false));
-    } else {
+      setShow(false)
+   /*   account.unfollow(userName)
+        .then(setButtonDisabled(false))
+        .then(garcasParsed.filter(i => i !== userName))
+        .then(i => JSON.stringify(i))
+        .then(i => localStorage.setItem("garcas", i))
+	.then(setShow(false))
+
+        .catch(e => console.log(e));
+	*/} else {
       newText = "Unfollow";
       account.follow(userName).then(setButtonDisabled(false));
     }
@@ -83,40 +95,42 @@ export default function UserCard(props) {
       .catch(e => setSrc(defaultSrc));
   };
   return (
-    <Grid item style={styles.root} xs={12} sm={3} md={3}>
-      <Card variant="outlined" style={styles.card}>
-        <div style={styles.first}>
-          <CardContent style={styles.profile}>
-            <StyledRating
-              name="customized-color"
-              max={1}
-              defaultValue={0}
-              icon={<FavoriteIcon fontSize="inherit" />}
-            />
-            <CardActionArea
-              style={styles.profile}
-              onClick={() =>
-                window.open("https://instagram.com/" + userName, "_blank")
-              }
+    <Zoom in={show} style={{ transitionDelay: show ? "500ms" : "0ms" }}>
+      <Grid item style={styles.root} xs={12} sm={3} md={3}>
+        <Card variant="outlined" style={styles.card}>
+          <div style={styles.first}>
+            <CardContent style={styles.profile}>
+              <StyledRating
+                name="customized-color"
+                max={1}
+                defaultValue={0}
+                icon={<FavoriteIcon fontSize="inherit" />}
+              />
+              <CardActionArea
+                style={styles.profile}
+                onClick={() =>
+                  window.open("https://instagram.com/" + userName, "_blank")
+                }
+              >
+                <Avatar style={styles.avatar} alt="Juancho Tacorta" src={src} />{" "}
+                <Typography variant="body2" color="textSecondary" component="p">
+                  {userName}
+                </Typography>
+              </CardActionArea>
+            </CardContent>
+          </div>
+          <CardActions>
+            <Button
+              variant="outlined"
+              disabled={buttonDisabled}
+              color="secondary"
+              onClick={buttonHandle}
             >
-              <Avatar style={styles.avatar} alt="Juancho Tacorta" src={src} />{" "}
-              <Typography variant="body2" color="textSecondary" component="p">
-                {userName}
-              </Typography>
-            </CardActionArea>
-          </CardContent>
-        </div>
-        <CardActions>
-          <Button
-            variant="outlined"
-            disabled={buttonDisabled}
-            color="secondary"
-            onClick={buttonHandle}
-          >
-            {buttonText}
-          </Button>
-        </CardActions>
-      </Card>
-    </Grid>
+              {buttonText}
+            </Button>
+          </CardActions>
+        </Card>
+      </Grid>
+    </Zoom>
   );
 }
