@@ -15,20 +15,19 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "space-between"
   }
 }));
-
 export default function Content() {
   const classes = useStyles();
   const [garcas, setGarcas] = useState([]);
 
   useEffect(() => {
     loadGarcas();
-    localStorage.setItem('likes','[]')
+    localStorage.setItem("likes", "[]");
   }, []);
 
-  const removeElement = (userName) =>{
-    let array = garcas.filter( i => i!== userName )
-    setGarcas(array)
-  }
+  const removeElement = userName => {
+    let array = garcas.filter(i => i !== userName);
+    setGarcas(array);
+  };
   const keepGarcas = acc => {
     const json = JSON.stringify(acc);
     localStorage.setItem("garcas", acc);
@@ -48,16 +47,18 @@ export default function Content() {
       .catch(e => console.log(e));
   };
   return (
-    <Grid container styles={classes.root} spacing={2}>
+    <Grid container spacing={2}>
       <h1>Total: {garcas.length}</h1>
-      {keepGarcas(garcas)}
-      {garcas.map(i => (
-        <UserCard
-          userName={i}
-	  removeElement={removeElement}
-          src="https://happytravel.viajes/wp-content/uploads/2020/04/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-        />
-      ))}
+      <div styles={classes.root}>
+        {keepGarcas(garcas)}
+        {garcas.map(i => (
+          <UserCard
+            userName={i}
+            removeElement={removeElement}
+            src="https://happytravel.viajes/wp-content/uploads/2020/04/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
+          />
+        ))}
+      </div>
     </Grid>
   );
 }

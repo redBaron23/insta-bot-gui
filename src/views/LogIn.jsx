@@ -5,7 +5,7 @@ import Menu from "../components/Menu";
 import Content from "../components/Content";
 import LoginForm from "../components/LoginForm";
 import Header from "../components/Header";
-
+import UserCard from "../components/UserCard";
 
 const styles = makeStyles(theme => ({
   root: {
@@ -31,6 +31,7 @@ const LogIn = props => {
   return (
     <div className={classes.root}>
       <Header />
+
       <div className={classes.content}>
         <div className={classes.toolbar}>
           <Grid container>

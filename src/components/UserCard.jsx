@@ -29,13 +29,15 @@ const StyledRating = withStyles({
 
 const styles = {
   root: {
-    maxWidth: 350
+    maxWidth: 380
   },
   card: {
     display: "flex"
   },
   first: {
-    maxWidth: 225
+    flexGrow:1,
+    display:'flex',
+    maxWidth: 255
   },
   profile: {
     display: "flex",
@@ -130,7 +132,7 @@ export default function UserCard(props) {
                     style={styles.avatar}
                     alt="Juancho Tacorta"
                     src={src}
-                  />{" "}
+                  />
                   <Typography
                     variant="body2"
                     color="textSecondary"
