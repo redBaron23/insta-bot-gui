@@ -35,9 +35,10 @@ class App extends Component {
   render() {
     const { logged } = this.state;
 
-    const keepAccount = async (data, customAlert,isLoading) => {
+    const keepAccount = async (data, customAlert,isLoading,userName) => {
       if (data.status === 200) {
         localStorage.setItem("account", JSON.stringify(data.data));
+	sessionStorage.setItem('userName',userName)
         this.setState({ logged: true });
 	console.log(data.data)
       } else {
@@ -50,7 +51,7 @@ class App extends Component {
       let account = new Account(username, password);
       account
         .init()
-        .then(res => keepAccount(res, customAlert,isLoading))
+        .then(res => keepAccount(res, customAlert,isLoading,username))
         .catch(e => console.log(e));
     };
     return (

@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function NavBar(props) {
   const classes = useStyles();
-  const { onClick, logout } = props;
+  const { onClick, logout, userName } = props;
   return (
     <AppBar className={classes.appBar} position="fixed">
       <Toolbar>
@@ -48,7 +48,10 @@ export default function NavBar(props) {
         <Typography variant="h6" className={classes.title}>
           Insta Bot
         </Typography>
-	<Button color="inherit" onClick={e => (logout ? logout(): '')}>
+        <Typography variant="h8" className={classes.title}>
+          {sessionStorage.getItem('userName')}
+        </Typography>{" "}
+        <Button color="inherit" onClick={e => (logout ? logout() : "")}>
           {!logout ? "LOGIN" : "LOGOUT"}
         </Button>
       </Toolbar>
