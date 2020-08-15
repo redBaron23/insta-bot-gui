@@ -22,17 +22,15 @@ export default function Content() {
 
   useEffect(() => {
     loadGarcas();
-    console.log(garcas);
+    localStorage.setItem('likes','[]')
   }, []);
 
   const removeElement = (userName) =>{
     let array = garcas.filter( i => i!== userName )
-    console.log(array)
     setGarcas(array)
   }
   const keepGarcas = acc => {
     const json = JSON.stringify(acc);
-    console.log(json)
     localStorage.setItem("garcas", acc);
   };
   const loadGarcas = () => {
@@ -48,7 +46,6 @@ export default function Content() {
       .then(usernames => setGarcas(usernames))
 
       .catch(e => console.log(e));
-    /* .then( garcas => console.log(garcas) )*/
   };
   return (
     <Grid container styles={classes.root} spacing={2}>

@@ -53,12 +53,25 @@ export default function UserCard(props) {
   const [src, setSrc] = useState(false);
   const [show, setShow] = useState(true);
   const [remove, setRemove] = useState(false);
+  const [liked, setLiked] = useState(false);
   const [buttonText, setButtonText] = useState("Unfollow");
   const [buttonDisabled, setButtonDisabled] = useState(false);
   useEffect(() => {
     getImage();
   }, []);
 
+  const handleLike = () => {
+    console.log("Handle like",userName);
+    let likes = JSON.parse(localStorage.getItem("likes"));
+    if (!liked) {
+      likes.push(userName);
+    } else {
+      likes = likes.filter(i => i !== userName);
+    }
+    const json = JSON.stringify(likes);
+    localStorage.setItem("likes", json);
+    setLiked(!liked);
+  };
   const buttonHandle = () => {
     let newText;
     const data = localStorage.getItem("account");
@@ -90,15 +103,20 @@ export default function UserCard(props) {
       .catch(e => setSrc(defaultSrc));
   };
   return (
-    <Zoom in={show} onExited={ () => setRemove(true) } style={{ transitionDelay: show ? "800ms" : "0ms" }}>
-      <div style={{display: remove ? "none" : "" }}>
+    <Zoom
+      in={show}
+      onExited={() => setRemove(true)}
+      style={{ transitionDelay: show ? "800ms" : "0ms" }}
+    >
+      <div style={{ display: remove ? "none" : "" }}>
         <Grid item style={styles.root} xs={12} sm={3} md={3}>
           <Card variant="outlined" style={styles.card}>
             <div style={styles.first}>
               <CardContent style={styles.profile}>
                 <StyledRating
-                  name="customized-color"
+                  name={userName}
                   max={1}
+                  onChange={handleLike}
                   defaultValue={0}
                   icon={<FavoriteIcon fontSize="inherit" />}
                 />
