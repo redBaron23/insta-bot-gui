@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid, Button } from "@material-ui/core";
+import {
+  Grid,
+  Button,
+  Box,
+  Typography
+} from "@material-ui/core";
 import UserCard from "./UserCard";
 import { Account } from "../fun/account";
+import CircularProgressWithLabel from './CircularProgressWithLabel'
+
+
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
@@ -18,6 +26,8 @@ const useStyles = makeStyles(theme => ({
 export default function Content() {
   const classes = useStyles();
   const [garcas, setGarcas] = useState([]);
+  const [progress, setProgress] = React.useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     loadGarcas();
@@ -45,15 +55,21 @@ export default function Content() {
     setTimeout(function() {
       //  call a 3s setTimeout when the loop is called
 
-      console.log('GARCA',garcas[i].alive,'Pos',garcas[i].userName,i)
-      let newGarcas = JSON.parse(JSON.stringify(garcas))
-      setGarcas(newGarcas.slice(i+1,newGarcas.length))
+      console.log("GARCA", garcas[i].alive, "Pos", garcas[i].userName, i);
+      let newGarcas = JSON.parse(JSON.stringify(garcas));
+      setLoading(true)
+      setGarcas(newGarcas.slice(i + 1, newGarcas.length));
       account.unfollow(garcas[i].userName); //  your code here
+      setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
       i++; //  increment the counter
       if (i < 10) {
         //  if the counter < 10, call the loop function
-        unfollowButton(account,i); //  ..  again which will trigger another
-      } //  ..  setTimeout()
+        unfollowButton(account, i); //  ..  again which will trigger another
+      }
+      else{
+	setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
+	setLoading(false)
+      }
     }, 1500);
   };
   const loadGarcas = () => {
@@ -68,8 +84,8 @@ export default function Content() {
       .getGarcas(whiteList)
       .then(usernames =>
         usernames.map(i => {
-	  let  json ={ userName: i, alive: true }
-	  console.log(json)
+          let json = { userName: i, alive: true };
+          console.log(json);
           return json;
         })
       )
@@ -78,18 +94,37 @@ export default function Content() {
   };
   return (
     <Grid container spacing={2}>
-      <h1>Total: {garcas.filter(x => x.alive).length}</h1>
-      <Button onClick={handleButton}>Unfollow 10</Button>
       <div styles={classes.root}>
+        <Box display="flex" flexDirection="row" width="100%" mx="auto" m={3}>
+          <Box right="40%">
+            <Typography variant="h4" display="inline">
+              Total: {garcas.filter(x => x.alive).length}
+            </Typography>
+          </Box>
+          <Box>
+            <Button
+              onClick={handleButton}
+	      disabled={loading}
+              variant="contained"
+              color="primary"
+              style={{ marginLeft: "60%" }}
+            >
+              Unfollow 10
+              <CircularProgressWithLabel value={progress} />
+            </Button>
+          </Box>
+        </Box>
         {keepGarcas(garcas)}
-	{garcas.filter( x => x.alive ).map((i, index) => (
-          <UserCard
-            userName={i.userName}
-            alive={i.alive}
-            removeElement={removeElement}
-            src="https://happytravel.viajes/wp-content/uploads/2020/04/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-          />
-        ))}
+        {garcas
+          .filter(x => x.alive)
+          .map((i, index) => (
+            <UserCard
+              userName={i.userName}
+              alive={i.alive}
+              removeElement={removeElement}
+              src="https://happytravel.viajes/wp-content/uploads/2020/04/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
+            />
+          ))}
       </div>
     </Grid>
   );
