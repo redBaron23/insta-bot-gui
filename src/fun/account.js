@@ -137,7 +137,6 @@ class Account {
         data: myAccount,
         userName: userName
       };
-      console.log("Antes del request");
       let res = await axios.post(backUri + "/follow", req);
       return res.data.status === 200;
     } catch (e) {
@@ -153,7 +152,23 @@ class Account {
         data: myAccount,
         userName: userName
       };
-      console.log("Antes del request");
+      let res = await axios.post(backUri + "/unfollow", req);
+      return res.data.status === 200;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  }
+
+  async unfollowDelay(userName,time) {
+    try {
+      await helper.sleep(time)
+      console.log('Comenzando tarea')
+      let myAccount = await this.export();
+      let req = {
+        data: myAccount,
+        userName: userName
+      };
       let res = await axios.post(backUri + "/unfollow", req);
       return res.data.status === 200;
     } catch (e) {

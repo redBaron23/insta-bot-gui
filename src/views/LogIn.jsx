@@ -31,7 +31,7 @@ const LogIn = props => {
   return (
     <div className={classes.root}>
       <Header />
-
+      {sessionStorage.setItem("userName", '')}
       <div className={classes.content}>
         <div className={classes.toolbar}>
           <Grid container>
