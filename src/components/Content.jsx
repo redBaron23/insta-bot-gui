@@ -22,6 +22,7 @@ export default function Content() {
   const [garcas, setGarcas] = useState([]);
   const [progress, setProgress] = React.useState(0);
   const [loading, setLoading] = useState(false);
+  const [removePointer, setRemovePointer] = useState(0);
 
   useEffect(() => {
     loadGarcas();
@@ -37,12 +38,15 @@ export default function Content() {
   };
   const handleButton = () => {
     setLoading(true);
-    let i = 0;
+    let i = 0 + removePointer;
     const data = localStorage.getItem("account");
     const json = JSON.parse(data);
     const account = new Account(json.userName, "NoPass");
     account.import(json);
-    unfollowButton(account, i);
+    if (garcas[i]) {
+      unfollowButton(account, i);
+      setRemovePointer(removePointerOld => removePointerOld + 10);
+    }
   };
   const unfollowButton = (account, i) => {
     //  create a loop function
@@ -52,30 +56,36 @@ export default function Content() {
       const data = localStorage.getItem("likes");
       const likes = JSON.parse(data);
 
-      console.log(
-        !likes.includes(garcas[i].userName),
-        garcas[i].userName,
-        likes
-      );
+      console.log(i, removePointer, garcas[i].userName);
       if (!likes.includes(garcas[i].userName)) {
         if (i !== -1) {
-          let array = garcas
-	  array.splice(i,1)
-	  setGarcas(array)
-          account.unfollow(garcas[i].userName); //  your code here
+          //let array = garcas
+          //array.splice(i,1)
+          let newArr = [...garcas];
+
+          newArr[i].alive = false;
+          console.log("Old", garcas[i]);
+          setGarcas(newArr);
+          console.log("New", garcas[i], "ponmter", i, removePointer);
+          //account.unfollow(garcas[i].userName); //  your code here
         }
       }
       setProgress(prevProgress =>
         prevProgress >= 100 ? 0 : prevProgress + 10
       );
       i++; //  increment the counter
-      if (i < 10) {
+      setRemovePointer(i);
+      if (i - removePointer < 10 && garcas[i]) {
         //  if the counter < 10, call the loop function
         unfollowButton(account, i); //  ..  again which will trigger another
       } else {
-        setProgress(prevProgress =>
-          prevProgress >= 100 ? 0 : prevProgress + 10
-        );
+        if (garcas[i]) {
+          setProgress(prevProgress =>
+            prevProgress >= 100 ? 0 : prevProgress + 10
+          );
+	}else{
+	  setProgress(prevProgress => 0)
+	}
         setLoading(false);
       }
     }, 1500);
@@ -91,8 +101,8 @@ export default function Content() {
     account
       .getGarcas(whiteList)
       .then(usernames =>
-        usernames.map(i => {
-          let json = { userName: i, alive: true, like: false };
+        usernames.map((i, index) => {
+          let json = { index: index, userName: i, alive: true, like: false };
           return json;
         })
       )
