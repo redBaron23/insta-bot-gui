@@ -35,7 +35,6 @@ const LogIn = props => {
       <div className={classes.content}>
         <div className={classes.toolbar}>
           <Grid container>
-	    <Content />
             <LoginForm onLogin={onLogin} />
           </Grid>
         </div>

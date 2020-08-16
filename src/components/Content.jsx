@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Grid,
-  Button,
-  Box,
-  Typography
-} from "@material-ui/core";
+import { Grid, Button, Box, Typography } from "@material-ui/core";
 import UserCard from "./UserCard";
 import { Account } from "../fun/account";
-import CircularProgressWithLabel from './CircularProgressWithLabel'
-
+import CircularProgressWithLabel from "./CircularProgressWithLabel";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -33,7 +27,6 @@ export default function Content() {
     loadGarcas();
     localStorage.setItem("likes", "[]");
   }, []);
-
   const removeElement = userName => {
     let array = garcas.filter(i => i !== userName);
     setGarcas(array);
@@ -43,6 +36,7 @@ export default function Content() {
     localStorage.setItem("garcas", acc);
   };
   const handleButton = () => {
+    setLoading(true);
     let i = 0;
     const data = localStorage.getItem("account");
     const json = JSON.parse(data);
@@ -55,20 +49,34 @@ export default function Content() {
     setTimeout(function() {
       //  call a 3s setTimeout when the loop is called
 
-      console.log("GARCA", garcas[i].alive, "Pos", garcas[i].userName, i);
-      let newGarcas = JSON.parse(JSON.stringify(garcas));
-      setLoading(true)
-      setGarcas(newGarcas.slice(i + 1, newGarcas.length));
-      account.unfollow(garcas[i].userName); //  your code here
-      setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
+      const data = localStorage.getItem("likes");
+      const likes = JSON.parse(data);
+
+      console.log(
+        !likes.includes(garcas[i].userName),
+        garcas[i].userName,
+        likes
+      );
+      if (!likes.includes(garcas[i].userName)) {
+        if (i !== -1) {
+          let array = garcas
+	  array.splice(i,1)
+	  setGarcas(array)
+          account.unfollow(garcas[i].userName); //  your code here
+        }
+      }
+      setProgress(prevProgress =>
+        prevProgress >= 100 ? 0 : prevProgress + 10
+      );
       i++; //  increment the counter
       if (i < 10) {
         //  if the counter < 10, call the loop function
         unfollowButton(account, i); //  ..  again which will trigger another
-      }
-      else{
-	setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
-	setLoading(false)
+      } else {
+        setProgress(prevProgress =>
+          prevProgress >= 100 ? 0 : prevProgress + 10
+        );
+        setLoading(false);
       }
     }, 1500);
   };
@@ -84,8 +92,7 @@ export default function Content() {
       .getGarcas(whiteList)
       .then(usernames =>
         usernames.map(i => {
-          let json = { userName: i, alive: true };
-          console.log(json);
+          let json = { userName: i, alive: true, like: false };
           return json;
         })
       )
@@ -104,7 +111,7 @@ export default function Content() {
           <Box>
             <Button
               onClick={handleButton}
-	      disabled={loading}
+              disabled={loading}
               variant="contained"
               color="primary"
               style={{ marginLeft: "60%" }}
@@ -122,7 +129,6 @@ export default function Content() {
               userName={i.userName}
               alive={i.alive}
               removeElement={removeElement}
-              src="https://happytravel.viajes/wp-content/uploads/2020/04/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
             />
           ))}
       </div>

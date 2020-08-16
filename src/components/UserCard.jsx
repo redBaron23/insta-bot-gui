@@ -119,7 +119,7 @@ export default function UserCard(props) {
                   name={userName}
                   max={1}
                   onChange={handleLike}
-                  defaultValue={0}
+		    defaultValue={0}
                   icon={<FavoriteIcon fontSize="inherit" />}
                 />
                 <CardActionArea
