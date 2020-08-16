@@ -29,8 +29,7 @@ export default function Content() {
     localStorage.setItem("likes", "[]");
   }, []);
   const removeElement = userName => {
-    let array = garcas.filter(i => i !== userName);
-    setGarcas(array);
+    setGarcas(oldGarcas => oldGarcas.filter(i => i.userName!== userName))
   };
   const keepGarcas = acc => {
     const json = JSON.stringify(acc);
@@ -67,7 +66,7 @@ export default function Content() {
           console.log("Old", garcas[i]);
           setGarcas(newArr);
           console.log("New", garcas[i], "ponmter", i, removePointer);
-          //account.unfollow(garcas[i].userName); //  your code here
+          account.unfollow(garcas[i].userName); //  your code here
         }
       }
       setProgress(prevProgress =>
@@ -83,9 +82,9 @@ export default function Content() {
           setProgress(prevProgress =>
             prevProgress >= 100 ? 0 : prevProgress + 10
           );
-	}else{
-	  setProgress(prevProgress => 0)
-	}
+        } else {
+          setProgress(prevProgress => 0);
+        }
         setLoading(false);
       }
     }, 1500);
