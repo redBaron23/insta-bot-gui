@@ -1,7 +1,7 @@
 const axios = require("axios");
 const helper = require("./helper");
 
-const backUri = "http://192.168.0.120:1111";
+const backUri = "http://192.168.0.100:1313";
 
 //Followers/Unfollowers per account
 const default_quantity = 10000;
