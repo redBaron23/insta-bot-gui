@@ -1,7 +1,7 @@
 const axios = require("axios");
 const helper = require("./helper");
 
-const backUri = "http://192.168.0.100:1313";
+const backUri = "http://127.0.0.1:1313";
 
 //Followers/Unfollowers per account
 const default_quantity = 10000;
@@ -160,14 +160,27 @@ class Account {
     }
   }
 
+  async unfollowUsers(users) {
+    try {
+      let myAccount = await this.export();
+      let req = {
+        account: myAccount,
+	users:users
+      };
+      let res = await axios.post(backUri + "/unfollowUsers", req);
+      return res.data.status === 200;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  }
   async unfollowDelay(userName,time) {
     try {
       await helper.sleep(time)
       console.log('Comenzando tarea')
       let myAccount = await this.export();
       let req = {
-        data: myAccount,
-        userName: userName
+        account: myAccount
       };
       let res = await axios.post(backUri + "/unfollow", req);
       return res.data.status === 200;

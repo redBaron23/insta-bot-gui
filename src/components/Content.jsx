@@ -29,7 +29,7 @@ export default function Content() {
     localStorage.setItem("likes", "[]");
   }, []);
   const removeElement = userName => {
-    setGarcas(oldGarcas => oldGarcas.filter(i => i.userName!== userName))
+    setGarcas(oldGarcas => oldGarcas.filter(i => i.userName !== userName));
   };
   const keepGarcas = acc => {
     const json = JSON.stringify(acc);
@@ -48,6 +48,19 @@ export default function Content() {
     }
   };
   const unfollowButton = (account, i) => {
+    const data = localStorage.getItem("likes");
+    const likes = JSON.parse(data);
+
+
+    let users = garcas.filter(i => !likes.includes(i.userName));
+
+    console.log('Going to unfollow');
+    console.log('garcas',garcas);
+    console.log('likes',likes);
+    console.log('users',users);
+    account.unfollowUsers(users.map(i => i.userName));
+
+    /*
     //  create a loop function
     setTimeout(function() {
       //  call a 3s setTimeout when the loop is called
@@ -88,6 +101,7 @@ export default function Content() {
         setLoading(false);
       }
     }, 1500);
+    */
   };
   const loadGarcas = () => {
     const data = localStorage.getItem("account");
