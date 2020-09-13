@@ -23,9 +23,11 @@ export default function Content() {
   const [progress, setProgress] = React.useState(0);
   const [loading, setLoading] = useState(false);
   const [removePointer, setRemovePointer] = useState(0);
+  const [buttonText, setButtonText] = useState("Loading");
 
   useEffect(() => {
     loadGarcas();
+    updateButton();
     localStorage.setItem("likes", "[]");
   }, []);
   const removeElement = userName => {
@@ -51,15 +53,25 @@ export default function Content() {
     const data = localStorage.getItem("likes");
     const likes = JSON.parse(data);
 
-
     let users = garcas.filter(i => !likes.includes(i.userName));
 
-    console.log('Going to unfollow');
-    console.log('garcas',garcas);
-    console.log('likes',likes);
-    console.log('users',users);
-    account.unfollowUsers(users.map(i => i.userName));
+    console.log("Going to unfollow");
+    console.log("garcas", garcas);
+    console.log("likes", likes);
+    console.log("users", users);
 
+    account
+      .isRunning()
+      .then(i => {
+        if (i.isRunning) {
+          account.stopBot()
+	  setButtonText("Stop bot")
+        } else {
+          account.unfollowUsers(users.map(i => i.userName))
+	  setButtonText("Unfollow All")
+	}
+      })
+    setLoading(false);
     /*
     //  create a loop function
     setTimeout(function() {
@@ -103,6 +115,17 @@ export default function Content() {
     }, 1500);
     */
   };
+  const updateButton = () => {
+    const data = localStorage.getItem("account");
+    const json = JSON.parse(data);
+    const account = new Account(json.userName, "NoPass");
+    console.log('Going to update');
+    account
+      .isRunning()
+      .then(res =>
+        res.isRunning ? setButtonText("Stop bot") : setButtonText("Unfollow All")
+      );
+  };
   const loadGarcas = () => {
     const data = localStorage.getItem("account");
     const json = JSON.parse(data);
@@ -139,7 +162,7 @@ export default function Content() {
               color="primary"
               style={{ marginLeft: "60%" }}
             >
-              Unfollow 10
+              {buttonText}
               <CircularProgressWithLabel value={progress} />
             </Button>
           </Box>

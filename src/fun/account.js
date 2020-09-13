@@ -145,6 +145,34 @@ class Account {
     }
   }
 
+  async stopBot() {
+    try {
+      const userName = this.userName;
+      let req = {
+        userName: userName
+      };
+      let res = await axios.post(backUri + "/stopBot", req);
+      let json = JSON.parse(res.data);
+      return json;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  }
+
+  async isRunning() {
+    try {
+      const userName = this.userName;
+      let req = {
+        userName: userName
+      };
+      let res = await axios.post(backUri + "/isRunning", req);
+      return res.data;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
+  }
   async unfollow(userName) {
     try {
       let myAccount = await this.export();
@@ -165,7 +193,7 @@ class Account {
       let myAccount = await this.export();
       let req = {
         account: myAccount,
-	users:users
+        users: users
       };
       let res = await axios.post(backUri + "/unfollowUsers", req);
       return res.data.status === 200;
@@ -174,10 +202,10 @@ class Account {
       return false;
     }
   }
-  async unfollowDelay(userName,time) {
+  async unfollowDelay(userName, time) {
     try {
-      await helper.sleep(time)
-      console.log('Comenzando tarea')
+      await helper.sleep(time);
+      console.log("Comenzando tarea");
       let myAccount = await this.export();
       let req = {
         account: myAccount
