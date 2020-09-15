@@ -1,7 +1,7 @@
 const axios = require("axios");
 const helper = require("./helper");
 
-const backUri = "http://127.0.0.1:1313";
+const backUri = "https://b60rxefx72.execute-api.us-east-1.amazonaws.com/dev";
 
 //Followers/Unfollowers per account
 const default_quantity = 10000;
@@ -60,17 +60,30 @@ class Account {
       return false;
     }
   }
+async test() {
+    try {
+      let acc, json;
+      acc = {
+        userName: this._userName,
+        password: this._passWord
+      };
+      json = JSON.stringify(acc);
+      console.log(backUri+"/login")
+      let res = await axios.post(backUri + "/login", json);
+      console.log('res',res)
+      return res.data;
+    } catch (e) {
+      console.log(e);
+    }
+  }
   async init() {
     try {
-      let acc, headers, json;
+      let acc, json;
       acc = {
         username: this._userName,
         password: this._passWord
       };
       json = JSON.stringify(acc);
-      headers = {
-        headers: { "Access-Control-Allow-Origin": "*" }
-      };
       let res = await axios.post(backUri + "/login", acc);
       return res.data;
     } catch (e) {
@@ -239,7 +252,7 @@ class Account {
     let isNextPage = true;
 
     const isFollower =
-      QUERY_HASH == "c76146de99bb02f6415203be841dd25a" ? true : false; //true = follower
+      QUERY_HASH === "c76146de99bb02f6415203be841dd25a" ? true : false; //true = follower
     while (isNextPage && users.length <= quantity) {
       let query_variables =
         '{"id": ' +

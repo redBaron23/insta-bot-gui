@@ -35,23 +35,28 @@ class App extends Component {
   render() {
     const { logged } = this.state;
 
-    const keepAccount = async (data, customAlert,isLoading,userName) => {
-      if (data.status === 200) {
-        localStorage.setItem("account", JSON.stringify(data.data));
-	sessionStorage.setItem('userName',userName)
-        this.setState({ logged: true });
-	console.log(data.data)
-      } else {
+    const keepAccount = async (data, customAlert, isLoading, userName) => {
+      if (data === 402) {
+        //Necesito codigo de verificacion
+	console.log('Dame el codigo paper')
+      } else if (data === 401) {
         customAlert("Wrong password or username", "error");
+      } else {
+        localStorage.setItem("account", JSON.stringify(data.data));
+        sessionStorage.setItem("userName", userName);
+        this.setState({ logged: true });
+        console.log(data.data);
       }
-      isLoading(false)
+      isLoading(false);
     };
     const handleLogout = () => this.setState({ logged: false });
-    const handleLogin = (username, password, customAlert,isLoading) => {
+    const handleLogin = (username, password, customAlert, isLoading) => {
+      localStorage.setItem("userName",username);
+      localStorage.setItem("password",password);
       let account = new Account(username, password);
       account
-        .init()
-        .then(res => keepAccount(res, customAlert,isLoading,username))
+        .test()
+        .then(res => keepAccount(res, customAlert, isLoading, username))
         .catch(e => console.log(e));
     };
     return (
