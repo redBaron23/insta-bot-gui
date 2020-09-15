@@ -1,4 +1,5 @@
 const axios = require("axios");
+
 const helper = require("./helper");
 
 const backUri = "https://b60rxefx72.execute-api.us-east-1.amazonaws.com/dev";
@@ -60,7 +61,24 @@ class Account {
       return false;
     }
   }
-async test() {
+  async initCode(code) {
+    try {
+      let acc, json;
+      acc = {
+	code:code,
+        userName: this._userName,
+        password: this._passWord
+      };
+      json = JSON.stringify(acc);
+      console.log(backUri + "/login");
+      let res = await axios.post(backUri + "/login", json);
+      console.log("res", res);
+      return res.data;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  async test() {
     try {
       let acc, json;
       acc = {
@@ -68,9 +86,9 @@ async test() {
         password: this._passWord
       };
       json = JSON.stringify(acc);
-      console.log(backUri+"/login")
+      console.log(backUri + "/login");
       let res = await axios.post(backUri + "/login", json);
-      console.log('res',res)
+      console.log("res", res);
       return res.data;
     } catch (e) {
       console.log(e);

@@ -10,20 +10,26 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 export default function FormDialog(props) {
 
 
-  const { show } = props;
-  const [open, setOpen] = React.useState(show);
+  const { show,onSend } = props;
+  const [code, setCode] = React.useState("");
 
+  const [open, setOpen] = React.useState(true);
 
+  const handleCode = ( event ) => {
+    const { name,value } = event.target;
+    setCode(value);
+  }
   const handleClickOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
+    onSend(code);
     setOpen(false);
   };
 
   return (
     <div>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+      <Dialog open={show} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Codigo de verificacion</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -34,6 +40,7 @@ export default function FormDialog(props) {
             margin="dense"
             id="code"
             label="Code"
+	    onChange={handleCode}
             type="code"
             fullWidth
           />

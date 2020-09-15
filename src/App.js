@@ -29,36 +29,17 @@ const SecuredRoute = props => {
 
 class App extends Component {
   state = {
-    logged: false
+    logged: false,
   };
 
   render() {
     const { logged } = this.state;
 
-    const keepAccount = async (data, customAlert, isLoading, userName) => {
-      if (data === 402) {
-        //Necesito codigo de verificacion
-	console.log('Dame el codigo paper')
-      } else if (data === 401) {
-        customAlert("Wrong password or username", "error");
-      } else {
-        localStorage.setItem("account", JSON.stringify(data.data));
-        sessionStorage.setItem("userName", userName);
-        this.setState({ logged: true });
-        console.log(data.data);
-      }
-      isLoading(false);
-    };
+
     const handleLogout = () => this.setState({ logged: false });
-    const handleLogin = (username, password, customAlert, isLoading) => {
-      localStorage.setItem("userName",username);
-      localStorage.setItem("password",password);
-      let account = new Account(username, password);
-      account
-        .test()
-        .then(res => keepAccount(res, customAlert, isLoading, username))
-        .catch(e => console.log(e));
-    };
+    const handleLogin = () => {
+      this.setState( { logged: true } );
+   };
     return (
       <ThemeProvider>
         {/*logged === false && <LogIn success={handleLogin}/>}
@@ -79,7 +60,8 @@ class App extends Component {
                   <Redirect to="/home" />
                 )
               }
-            ></Route>
+            >
+	    </Route>
           </Switch>
         </Router>
       </ThemeProvider>

@@ -14,6 +14,10 @@ import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import UserCard from "./UserCard";
+import FormDialog from "./FormDialog";
+
+import { Account } from "../fun/account";
+
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -56,6 +60,7 @@ export default function LogIn(props) {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
   const [usernameError, setUsernameError] = useState(false);
+  const [openForm, setOpenForm] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
@@ -102,13 +107,44 @@ export default function LogIn(props) {
     }
   };
 
-  const isMatch = account => {
+  const handleSendCode = code => {
+    const userName = localStorage.getItem("userName");
+    const password = localStorage.getItem("password");
+    let account = new Account(userName, password);
+    account
+      .initCode(code)
+      .then(res => keepAccount(res, customAlert, username))
+      .catch(e => console.log(e));
+  };
+  const keepAccount = async (data, customAlert, userName) => {
+    if (data === 402) {
+      //Necesito codigo de verificacion
+      setOpenForm(true);
+      console.log("Dame el codigo paper");
+    } else if (data === 401) {
+      customAlert("Wrong password or username", "error");
+    } else {
+      localStorage.setItem("account", JSON.stringify(data.data));
+      sessionStorage.setItem("userName", userName);
+      //Logged
+      onLogin();
+      console.log(data);
+    }
+    setLoading(false);
+  };
+  const isMatch = async acc => {
     //Send to backend
     let backend = true;
 
     if (backend) {
       //LOGEADO
-      onLogin(account.username, account.password, customAlert, setLoading);
+      localStorage.setItem("userName", acc.username);
+      localStorage.setItem("password", acc.password);
+      let account = new Account(username, password);
+      account
+        .test()
+        .then(res => keepAccount(res, customAlert, username))
+        .catch(e => console.log(e));
     } else {
       let message = "Incorrect username or password";
 
@@ -124,6 +160,7 @@ export default function LogIn(props) {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
+      <FormDialog show={openForm} onSend={handleSendCode} />
       <Snackbar
         open={openNotification}
         autoHideDuration={6000}
@@ -179,11 +216,11 @@ export default function LogIn(props) {
             onClick={handleSubmit}
             className={classes.submit}
           >
-	    {'Log'}
+            {"Log"}
             {loading && (
               <CircularProgress size={24} className={classes.buttonProgress} />
             )}
-	    {' In'}
+            {" In"}
           </Button>
         </form>
       </div>
