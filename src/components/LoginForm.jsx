@@ -124,7 +124,8 @@ export default function LogIn(props) {
     } else if (data === 401) {
       customAlert("Wrong password or username", "error");
     } else {
-      localStorage.setItem("account", JSON.stringify(data.data));
+      console.log("RESPUESTA",data)
+      localStorage.setItem("account", JSON.stringify(data));
       sessionStorage.setItem("userName", userName);
       //Logged
       onLogin();
