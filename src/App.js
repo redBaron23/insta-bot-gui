@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import "./App.css";
 import Main from "./views/Main";
 import LogIn from "./views/LogIn";
-import { ThemeProvider } from "@material-ui/core/styles";
+import { ThemeProvider,createMuiTheme } from "@material-ui/core/styles";
+import { orange } from '@material-ui/core/colors';
 import {
   BrowserRouter as Router,
   Redirect,
@@ -29,19 +30,23 @@ const SecuredRoute = props => {
 
 class App extends Component {
   state = {
-    logged: false,
+    logged: false
   };
 
   render() {
     const { logged } = this.state;
 
-
+    const theme = createMuiTheme({
+      status: {
+        danger: orange[500]
+      }
+    });
     const handleLogout = () => this.setState({ logged: false });
     const handleLogin = () => {
-      this.setState( { logged: true } );
-   };
+      this.setState({ logged: true });
+    };
     return (
-      <ThemeProvider>
+      <ThemeProvider theme={theme}>
         {/*logged === false && <LogIn success={handleLogin}/>}
 	  {logged === true && <Main logout={handleLogin}/>*/}
         <Router>
@@ -60,8 +65,7 @@ class App extends Component {
                   <Redirect to="/home" />
                 )
               }
-            >
-	    </Route>
+            ></Route>
           </Switch>
         </Router>
       </ThemeProvider>
