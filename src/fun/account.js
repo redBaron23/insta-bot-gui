@@ -13,7 +13,7 @@ const errTime = {
   429: 1000 * 3600 * 12
 };
 
-export class Account {
+class Account {
   constructor(userName, passWord) {
     this._userName = userName;
     this._passWord = passWord;
@@ -457,3 +457,4 @@ export class Account {
   }
 }
 
+exports.Account = Account;
