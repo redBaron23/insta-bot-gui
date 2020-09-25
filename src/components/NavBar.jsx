@@ -48,7 +48,7 @@ export default function NavBar(props) {
         <Typography variant="h6" className={classes.title}>
           Insta Bot
         </Typography>
-        <Typography variant="h8" className={classes.title}>
+        <Typography variant="h6" className={classes.title}>
           {sessionStorage.getItem('userName')}
         </Typography>{" "}
         <Button color="inherit" onClick={e => (logout ? logout() : "")}>
