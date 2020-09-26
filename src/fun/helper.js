@@ -1,7 +1,7 @@
 
 const { promisify } = require("util");
 
-const getRandom = async (min, max) => {
+export const getRandom = async (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -20,11 +20,11 @@ async function timeDay() {
   return day;
 }
 
-async function dateTime() {
+export async function dateTime() {
   const dateTime = (await timeHour()) + " " + (await timeDay());
   return dateTime;
 }
-async function sleepRandom(MIN_TIME, MAX_TIME) {
+export async function sleepRandom(MIN_TIME, MAX_TIME) {
   let time;
   let sleepTime = await getRandom(MIN_TIME, MAX_TIME);
   time = parseInt(sleepTime);
@@ -33,7 +33,7 @@ async function sleepRandom(MIN_TIME, MAX_TIME) {
   await sleep(sleepTime);
 }
 
-function delay(time) {
+export function delay(time) {
   return new Promise(resolve => setTimeout(resolve, time));
 }
 
@@ -44,7 +44,7 @@ async function sleep(time) {
   return true
 }
 
-async function checkMemory() {
+export async function checkMemory() {
   let _maxMemoryConsumption = 0;
   let _dtOfMaxMemoryConsumption;
 
@@ -64,9 +64,3 @@ async function checkMemory() {
     );
   });
 }
-
-exports.checkMemory = checkMemory;
-exports.sleep = sleep;
-exports.getRandom = getRandom;
-exports.sleepRandom = sleepRandom;
-exports.dateTime = dateTime;
