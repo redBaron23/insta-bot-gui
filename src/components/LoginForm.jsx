@@ -71,6 +71,10 @@ export default function LogIn(props) {
     setOpenNotification(true);
   };
 
+  const handleCloseForm = () => {
+    setOpenForm(false);
+  };
+
   const handleCloseNotification = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -152,7 +156,11 @@ export default function LogIn(props) {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <FormDialog show={openForm} onSend={handleSendCode} onClose={setOpenForm(false)}/>
+      <FormDialog
+        show={openForm}
+        onSend={handleSendCode}
+        onClose={handleCloseForm}
+      />
       <Snackbar
         open={openNotification}
         autoHideDuration={6000}
