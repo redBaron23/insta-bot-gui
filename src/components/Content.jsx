@@ -60,17 +60,6 @@ export default function Content() {
     console.log("likes", likes);
     console.log("users", users);
 
-    account
-      .isRunning()
-      .then(i => {
-        if (i.isRunning) {
-          account.stopBot()
-	  setButtonText("Stop bot")
-        } else {
-          account.unfollowUsers(users.map(i => i.userName))
-	  setButtonText("Unfollow All")
-	}
-      })
     setLoading(false);
     /*
     //  create a loop function
@@ -120,11 +109,7 @@ export default function Content() {
     const json = JSON.parse(data);
     const account = new Account(json.userName, "NoPass");
     console.log('Going to update');
-    account
-      .isRunning()
-      .then(res =>
-        res.isRunning ? setButtonText("Stop bot") : setButtonText("Unfollow All")
-      );
+
   };
   const loadGarcas = () => {
     const data = localStorage.getItem("account");

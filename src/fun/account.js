@@ -47,9 +47,9 @@ export class Account {
     data.userId = this._userId;
     return data;
   }
-  import(data) {
+  import(cookies) {
     try {
-      let cookies = data.cookies;
+      console.log("import",cookies)
       this._csrftoken = cookies.csrftoken;
       this._sessionid = cookies.sessionid;
       return true;
@@ -128,19 +128,13 @@ export class Account {
     console.log("Following: " + this._totalFollowing);
   }
 
-  async getGarcas(whiteList) {
+  async getGarcas() {
     //A garca is who you follow but it didn't follow you back
     try {
       let res, data;
-      let myAccount = await this.export();
-      let req = {
-        data: myAccount,
-        whiteList: whiteList
-      };
       console.log("Antes del request");
-      res = await axios.post(backUri + "/garcas", req);
-      data = res.data;
-      return data.status === 200 ? data.garcas : false;
+      res = await axios(backUri + "/garcas?userName="+this._userName);
+      return res.status === 200 ? res.data : false;
     } catch (e) {
       console.log(e);
       return false;
@@ -176,19 +170,7 @@ export class Account {
     }
   }
 
-  async isRunning() {
-    try {
-      const userName = this.userName;
-      let req = {
-        userName: userName
-      };
-      let res = await axios.post(backUri + "/isRunning", req);
-      return res.data;
-    } catch (e) {
-      console.log(e);
-      return false;
-    }
-  }
+
   async unfollow(userName) {
     try {
       let myAccount = await this.export();
