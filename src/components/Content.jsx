@@ -113,14 +113,15 @@ export default function Content() {
   };
   const loadGarcas = () => {
     const data = localStorage.getItem("account");
-    const json = JSON.parse(data);
-    const account = new Account(json.userName, "NoPass");
+    const cookies = JSON.parse(data);
+    const userName = localStorage.getItem("userName");
+    console.log("Mi datita",userName)
+    const account = new Account(userName, "NoPass");
     //TEST
-    account.import(json);
+    account.import(cookies);
 
-    let whiteList = "pato.toledo";
     account
-      .getGarcas(whiteList)
+      .getGarcas()
       .then(usernames =>
         usernames.map((i, index) => {
           let json = { index: index, userName: i, alive: true, like: false };

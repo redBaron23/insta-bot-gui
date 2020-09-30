@@ -132,8 +132,8 @@ export class Account {
     //A garca is who you follow but it didn't follow you back
     try {
       let res, data;
-      console.log("Antes del request");
-      res = await axios(backUri + "/garcas?userName="+this._userName);
+      console.log("Antes del request garcas",this.userName);
+      res = await axios(backUri + "/unfollowers?userName="+this.userName);
       return res.status === 200 ? res.data : false;
     } catch (e) {
       console.log(e);
