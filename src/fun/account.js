@@ -146,11 +146,11 @@ export class Account {
     try {
       let myAccount = await this.export();
       let req = {
-        data: myAccount,
+        cookies: myAccount.cookies,
         userName: userName
       };
       let res = await axios.post(backUri + "/follow", req);
-      return res.data.status === 200;
+      return res.status === 200;
     } catch (e) {
       console.log(e);
       return false;
@@ -176,11 +176,11 @@ export class Account {
     try {
       let myAccount = await this.export();
       let req = {
-        data: myAccount,
+        cookies: myAccount.cookies,
         userName: userName
       };
       let res = await axios.post(backUri + "/unfollow", req);
-      return res.data.status === 200;
+      return res.status === 200;
     } catch (e) {
       console.log(e);
       return false;
@@ -195,7 +195,7 @@ export class Account {
         users: users
       };
       let res = await axios.post(backUri + "/unfollowUsers", req);
-      return res.data.status === 200;
+      return res.status === 200;
     } catch (e) {
       console.log(e);
       return false;
@@ -210,7 +210,7 @@ export class Account {
         account: myAccount
       };
       let res = await axios.post(backUri + "/unfollow", req);
-      return res.data.status === 200;
+      return res.status === 200;
     } catch (e) {
       console.log(e);
       return false;
