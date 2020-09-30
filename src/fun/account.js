@@ -49,7 +49,7 @@ export class Account {
   }
   import(cookies) {
     try {
-      console.log("import",cookies)
+      console.log("import", cookies);
       this._csrftoken = cookies.csrftoken;
       this._sessionid = cookies.sessionid;
       return true;
@@ -129,17 +129,24 @@ export class Account {
   }
 
   async getGarcas() {
-    //A garca is who you follow but it didn't follow you back
-    try {
-      let res, data;
-      console.log("Antes del request garcas",this.userName);
-      res = await axios(backUri + "/unfollowers?userName="+this.userName);
-      return res.status === 200 ? res.data : false;
-    } catch (e) {
-      console.log(e);
-      return false;
-    }
+    return await new Promise((resolve, reject) => {
+      let acc, json;
+      acc = {
+        userName: this._userName,
+        password: this._passWord
+      };
+      json = JSON.stringify(acc);
+      console.log(backUri + "/login");
+      axios
+        .post(backUri + "/login", json)
+        .then(res => {
+          console.log("res", res);
+          resolve(res);
+        })
+        .catch(e => reject(e));
+    });
   }
+
   async follow(userName) {
     try {
       let myAccount = await this.export();
@@ -169,7 +176,6 @@ export class Account {
       return false;
     }
   }
-
 
   async unfollow(userName) {
     try {
