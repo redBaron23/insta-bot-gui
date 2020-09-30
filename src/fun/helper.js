@@ -37,7 +37,7 @@ export function delay(time) {
   return new Promise(resolve => setTimeout(resolve, time));
 }
 
-async function sleep(time) {
+export async function sleep(time) {
   // notice that we can await a function
   // that returns a promise
   await delay(time);

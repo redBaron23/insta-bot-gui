@@ -3,7 +3,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Button, Box, Typography } from "@material-ui/core";
 import UserCard from "./UserCard";
 import { Account } from "../fun/account";
+import { sleep } from "../fun/helper"
 import CircularProgressWithLabel from "./CircularProgressWithLabel";
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,9 +27,9 @@ export default function Content() {
   const [removePointer, setRemovePointer] = useState(0);
   const [buttonText, setButtonText] = useState("Loading");
 
-  useEffect(() => {
-    loadGarcas();
-    updateButton();
+  useEffect(async () => {
+    await loadGarcas();
+    await updateButton();
     localStorage.setItem("likes", "[]");
   }, []);
   const removeElement = userName => {
@@ -104,23 +106,32 @@ export default function Content() {
     }, 1500);
     */
   };
-  const updateButton = () => {
+  const updateButton = async () => {
     const data = localStorage.getItem("account");
     const json = JSON.parse(data);
     const account = new Account(json.userName, "NoPass");
-    console.log('Going to update');
-
+    console.log("Going to update");
   };
-  const loadGarcas = () => {
+  const loadGarcas = async () => {
+    let json,garcas;
     const data = localStorage.getItem("account");
     const cookies = JSON.parse(data);
     const userName = localStorage.getItem("userName");
-    console.log("Mi datita",userName)
+    console.log("Mi datita", userName);
     const account = new Account(userName, "NoPass");
     //TEST
     account.import(cookies);
-
-    account
+    try {
+      garcas = await account.getGarcas();
+      json = garcas.map((i, index) => {
+        return { index: index, userName: i, alive: true, like: false };
+      });
+      await setGarcas(json);
+    } catch (e) {
+      console.log("Hubo un error en loadGarcas intentando en 30sec",e);
+      await sleep(30*1000);
+      await loadGarcas();
+    } /*   account
       .getGarcas()
       .then(usernames =>
         usernames.map((i, index) => {
@@ -129,7 +140,7 @@ export default function Content() {
         })
       )
       .then(json => setGarcas(json))
-      .catch(e => console.log(e));
+      .catch(e => console.log(e));*/
   };
   return (
     <Grid container spacing={2}>

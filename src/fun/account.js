@@ -131,17 +131,12 @@ export class Account {
   async getGarcas() {
     return await new Promise((resolve, reject) => {
       let acc, json;
-      acc = {
-        userName: this._userName,
-        password: this._passWord
-      };
-      json = JSON.stringify(acc);
+
       console.log(backUri + "/login");
-      axios
-        .post(backUri + "/login", json)
+      axios(backUri + "/unfollowers?userName="+this._userName)
         .then(res => {
-          console.log("res", res);
-          resolve(res);
+          console.log("Garcas son", res.data);
+          resolve(res.data);
         })
         .catch(e => reject(e));
     });
