@@ -124,12 +124,11 @@ export default function LogIn(props) {
     } else if (data === 401) {
       customAlert("Wrong password or username", "error");
     } else {
-      console.log("RESPUESTA",data)
+      console.log("RESPUESTA", data);
       localStorage.setItem("account", JSON.stringify(data));
       sessionStorage.setItem("userName", userName);
       //Logged
       onLogin();
-      console.log(data);
     }
     setLoading(false);
   };
@@ -137,31 +136,23 @@ export default function LogIn(props) {
     //Send to backend
     let backend = true;
 
-    if (backend) {
-      //LOGEADO
-      localStorage.setItem("userName", acc.username);
-      localStorage.setItem("password", acc.password);
-      let account = new Account(username, password);
-      account
-        .test()
-        .then(res => keepAccount(res, customAlert, username))
-        .catch(e => console.log(e));
-    } else {
-      let message = "Incorrect username or password";
-
-      setUsernameError(true);
-      setPasswordError(true);
-      setNotificationMessage(message);
-      setNotificationSeverity("error");
-      setOpenNotification(true);
-      return false;
+    //LOGEADO
+    localStorage.setItem("userName", acc.username);
+    localStorage.setItem("password", acc.password);
+    let account = new Account(username, password);
+    try {
+      let res = await account.init();
+      keepAccount(res.data, customAlert, account.userName);
+      res.status !== 200 && console.log("El error", res);
+    } catch (e) {
+      console.log("El err", e);
     }
   };
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <FormDialog show={openForm} onSend={handleSendCode} />
+      <FormDialog show={openForm} onSend={handleSendCode} onClose={setOpenForm(false)}/>
       <Snackbar
         open={openNotification}
         autoHideDuration={6000}

@@ -50,9 +50,6 @@ export class Account {
   import(data) {
     try {
       let cookies = data.cookies;
-      this._userId = data.userId;
-      this._userName = data.userName;
-      this._shbid = cookies.shbid;
       this._csrftoken = cookies.csrftoken;
       this._sessionid = cookies.sessionid;
       return true;
@@ -65,23 +62,7 @@ export class Account {
     try {
       let acc, json;
       acc = {
-	code:code,
-        userName: this._userName,
-        password: this._passWord
-      };
-      json = JSON.stringify(acc);
-      console.log(backUri + "/login");
-      let res = await axios.post(backUri + "/login", json);
-      console.log("res", res);
-      return res.data;
-    } catch (e) {
-      console.log(e);
-    }
-  }
-  async test() {
-    try {
-      let acc, json;
-      acc = {
+        code: code,
         userName: this._userName,
         password: this._passWord
       };
@@ -95,18 +76,22 @@ export class Account {
     }
   }
   async init() {
-    try {
+    return await new Promise((resolve, reject) => {
       let acc, json;
       acc = {
-        username: this._userName,
+        userName: this._userName,
         password: this._passWord
       };
       json = JSON.stringify(acc);
-      let res = await axios.post(backUri + "/login", acc);
-      return res.data;
-    } catch (e) {
-      console.log(e);
-    }
+      console.log(backUri + "/login");
+      axios
+        .post(backUri + "/login", json)
+        .then(res => {
+          console.log("res", res);
+          resolve(res);
+        })
+        .catch(e => reject(e));
+    });
   }
   async update() {
     [this._totalFollowers, this._totalFollowing] = await this.countFollows();
@@ -456,4 +441,3 @@ export class Account {
     };
   }
 }
-
