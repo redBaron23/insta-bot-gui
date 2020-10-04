@@ -4,7 +4,6 @@ import { Grid, Button, Box, Typography } from "@material-ui/core";
 import UserCard from "./UserCard";
 import { Account } from "../fun/account";
 import { sleep } from "../fun/helper";
-import CircularProgressWithLabel from "./CircularProgressWithLabel";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -21,11 +20,10 @@ const useStyles = makeStyles(theme => ({
 export default function Content() {
   const classes = useStyles();
   const [garcas, setGarcas] = useState([]);
-  const [progress, setProgress] = React.useState(0);
   const [totalUnfollowers, setTotalUnfollowers] = useState(0);
   const [loading, setLoading] = useState(false);
   const [removePointer, setRemovePointer] = useState(0);
-  const [buttonText, setButtonText] = useState("Loading");
+  const [buttonText, setButtonText] = useState("Unfollow All");
 
   useEffect(() => {
     loadGarcas();
@@ -34,11 +32,6 @@ export default function Content() {
   }, []);
   const removeElement = userName => {
     setGarcas(oldGarcas => oldGarcas.filter(i => i.userName !== userName));
-  };
-  const keepGarcas = () => {
-    const json = JSON.stringify(garcas);
-    localStorage.setItem("garcas", garcas);
-    console.log("Keep garcas",garcas)
   };
   const handleButton = () => {
     setLoading(true);
@@ -53,60 +46,24 @@ export default function Content() {
     }
   };
   const unfollowButton = (account, i) => {
+    let userNames, users;
     const data = localStorage.getItem("likes");
     const likes = JSON.parse(data);
 
-    let users = garcas.filter(i => !likes.includes(i.userName));
+    users = garcas.filter(i => !likes.includes(i.userName));
 
     console.log("Going to unfollow");
-    console.log("garcas", garcas);
-    console.log("likes", likes);
-    console.log("users", users);
+    console.log("Longitud de garcas", garcas.length);
+    console.log("Longitud de users", users.length);
 
-    setLoading(false);
-    /*
-    //  create a loop function
-    setTimeout(function() {
-      //  call a 3s setTimeout when the loop is called
-
-      const data = localStorage.getItem("likes");
-      const likes = JSON.parse(data);
-
-      console.log(i, removePointer, garcas[i].userName);
-      if (!likes.includes(garcas[i].userName)) {
-        if (i !== -1) {
-          //let array = garcas
-          //array.splice(i,1)
-          let newArr = [...garcas];
-
-          newArr[i].alive = false;
-          console.log("Old", garcas[i]);
-          setGarcas(newArr);
-          console.log("New", garcas[i], "ponmter", i, removePointer);
-          account.unfollow(garcas[i].userName); //  your code here
-        }
-      }
-      setProgress(prevProgress =>
-        prevProgress >= 100 ? 0 : prevProgress + 10
-      );
-      i++; //  increment the counter
-      setRemovePointer(i);
-      if (i - removePointer < 10 && garcas[i]) {
-        //  if the counter < 10, call the loop function
-        unfollowButton(account, i); //  ..  again which will trigger another
-      } else {
-        if (garcas[i]) {
-          setProgress(prevProgress =>
-            prevProgress >= 100 ? 0 : prevProgress + 10
-          );
-        } else {
-          setProgress(prevProgress => 0);
-        }
-        setLoading(false);
-      }
-    }, 1500);
-    */
+    userNames = users.map(i => i.userName);
+    setLoading(true);
+    account.startBot(userNames).then(res => {
+      setLoading(false);
+      setButtonText(prev => (prev.includes("Stop") ? "Unfollow All" : "Stop Unfollow All" ));
+    });
   };
+
   const updateButton = async () => {
     const data = localStorage.getItem("account");
     const json = JSON.parse(data);
@@ -128,7 +85,7 @@ export default function Content() {
         return { index: index, userName: i, alive: true, like: false };
       });
       await setGarcas(json);
-      setTotalUnfollowers(json.filter(x => x.alive).length)
+      setTotalUnfollowers(json.filter(x => x.alive).length);
     } catch (e) {
       console.log("Hubo un error en loadGarcas intentando en 30sec", e);
       await sleep(30 * 1000);
@@ -162,11 +119,9 @@ export default function Content() {
               style={{ marginLeft: "60%" }}
             >
               {buttonText}
-              <CircularProgressWithLabel value={progress} />
             </Button>
           </Box>
         </Box>
-        {keepGarcas()}
         {garcas
           .filter(x => x.alive)
           .map((i, index) => (
@@ -174,7 +129,7 @@ export default function Content() {
               userName={i.userName}
               alive={i.alive}
               removeElement={removeElement}
-	      updateGarcas={setTotalUnfollowers}
+              updateGarcas={setTotalUnfollowers}
             />
           ))}
       </div>

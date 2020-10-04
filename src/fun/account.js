@@ -35,7 +35,10 @@ export class Account {
       return [followers, following];
     }
   }
-
+  
+  async startBot(userNames){
+    console.log("Nombres: ",userNames);
+  }
   export() {
     let data = {};
     let cookies = {};
