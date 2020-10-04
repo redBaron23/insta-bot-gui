@@ -35,28 +35,45 @@ export class Account {
       return [followers, following];
     }
   }
-  
-  async startBot(type,userNames){
-    console.log("Nombres: ",userNames);
+  async stopBot() {
+    try {
+      let data, json;
+      data = {
+        userName: this._userName,
+        password: this._passWord
+      };
+      json = JSON.stringify(data);
+      console.log("el user", this._userName);
+      console.log(backUri + "/stopbot");
+      console.log("Lo que envio al bot", json);
+      let res = await axios.post(backUri + "/stopbot", json);
+      console.log("res", res);
+      return res.data;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async startBot(type, userNames) {
+    console.log("Nombres: ", userNames);
     try {
       let data, json;
       data = {
         userName: this._userName,
         password: this._passWord,
-	type: type
+        type: type
       };
       if (userNames) data.unfollowers = userNames;
       json = JSON.stringify(data);
-      console.log("el user",this._userName)
+      console.log("el user", this._userName);
       console.log(backUri + "/startbot");
-      console.log("Lo que envio al bot",json)
+      console.log("Lo que envio al bot", json);
       let res = await axios.post(backUri + "/startbot", json);
       console.log("res", res);
       return res.data;
     } catch (e) {
       console.log(e);
     }
- 
   }
   export() {
     let data = {};
@@ -155,7 +172,7 @@ export class Account {
       let acc, json;
 
       console.log(backUri + "/login");
-      axios(backUri + "/unfollowers?userName="+this._userName)
+      axios(backUri + "/unfollowers?userName=" + this._userName)
         .then(res => {
           console.log("Garcas son", res.data);
           resolve(res.data);
@@ -181,11 +198,11 @@ export class Account {
 
   async stopBot() {
     try {
-      const userName = this.userName;
       let req = {
-        userName: userName
+        userName: this._userName,
+        password: this._passWord
       };
-      let res = await axios.post(backUri + "/stopBot", req);
+      let res = await axios.post(backUri + "/stopbot", req);
       let json = JSON.parse(res.data);
       return json;
     } catch (e) {
