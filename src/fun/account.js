@@ -36,8 +36,27 @@ export class Account {
     }
   }
   
-  async startBot(userNames){
+  async startBot(type,userNames){
     console.log("Nombres: ",userNames);
+    try {
+      let data, json;
+      data = {
+        userName: this._userName,
+        password: this._passWord,
+	type: type
+      };
+      if (userNames) data.unfollowers = userNames;
+      json = JSON.stringify(data);
+      console.log("el user",this._userName)
+      console.log(backUri + "/startbot");
+      console.log("Lo que envio al bot",json)
+      let res = await axios.post(backUri + "/startbot", json);
+      console.log("res", res);
+      return res.data;
+    } catch (e) {
+      console.log(e);
+    }
+ 
   }
   export() {
     let data = {};

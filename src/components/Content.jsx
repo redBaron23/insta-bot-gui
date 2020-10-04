@@ -38,7 +38,7 @@ export default function Content() {
     let i = 0 + removePointer;
     const data = localStorage.getItem("account");
     const json = JSON.parse(data);
-    const account = new Account(json.userName, "NoPass");
+    const account = new Account(localStorage.getItem("userName"), localStorage.getItem("password"));
     account.import(json);
     if (garcas[i]) {
       unfollowButton(account, i);
@@ -58,7 +58,9 @@ export default function Content() {
 
     userNames = users.map(i => i.userName);
     setLoading(true);
-    account.startBot(userNames).then(res => {
+    //Dynamic es para que solo los deje de seguir
+    console.log("El nombre es",account.userName)
+    account.startBot("dynamic",userNames).then(res => {
       setLoading(false);
       setButtonText(prev => (prev.includes("Stop") ? "Unfollow All" : "Stop Unfollow All" ));
     });
@@ -67,7 +69,7 @@ export default function Content() {
   const updateButton = async () => {
     const data = localStorage.getItem("account");
     const json = JSON.parse(data);
-    const account = new Account(json.userName, "NoPass");
+    const account = new Account(json.userName, localStorage.getItem("password"));
     console.log("Going to update");
   };
   const loadGarcas = async () => {
@@ -76,7 +78,7 @@ export default function Content() {
     const cookies = JSON.parse(data);
     const userName = localStorage.getItem("userName");
     console.log("Mi datita", userName);
-    const account = new Account(userName, "NoPass");
+    const account = new Account(userName, localStorage.getItem("password"));
     //TEST
     account.import(cookies);
     try {
