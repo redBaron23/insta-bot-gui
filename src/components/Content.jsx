@@ -3,9 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Button, Box, Typography } from "@material-ui/core";
 import UserCard from "./UserCard";
 import { Account } from "../fun/account";
-import { sleep } from "../fun/helper"
+import { sleep } from "../fun/helper";
 import CircularProgressWithLabel from "./CircularProgressWithLabel";
-
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -23,21 +22,23 @@ export default function Content() {
   const classes = useStyles();
   const [garcas, setGarcas] = useState([]);
   const [progress, setProgress] = React.useState(0);
+  const [totalUnfollowers, setTotalUnfollowers] = useState(0);
   const [loading, setLoading] = useState(false);
   const [removePointer, setRemovePointer] = useState(0);
   const [buttonText, setButtonText] = useState("Loading");
 
-  useEffect(async () => {
-    await loadGarcas();
-    await updateButton();
+  useEffect(() => {
+    loadGarcas();
+    updateButton();
     localStorage.setItem("likes", "[]");
   }, []);
   const removeElement = userName => {
     setGarcas(oldGarcas => oldGarcas.filter(i => i.userName !== userName));
   };
-  const keepGarcas = acc => {
-    const json = JSON.stringify(acc);
-    localStorage.setItem("garcas", acc);
+  const keepGarcas = () => {
+    const json = JSON.stringify(garcas);
+    localStorage.setItem("garcas", garcas);
+    console.log("Keep garcas",garcas)
   };
   const handleButton = () => {
     setLoading(true);
@@ -113,7 +114,7 @@ export default function Content() {
     console.log("Going to update");
   };
   const loadGarcas = async () => {
-    let json,garcas;
+    let json, garcas;
     const data = localStorage.getItem("account");
     const cookies = JSON.parse(data);
     const userName = localStorage.getItem("userName");
@@ -127,9 +128,10 @@ export default function Content() {
         return { index: index, userName: i, alive: true, like: false };
       });
       await setGarcas(json);
+      setTotalUnfollowers(json.filter(x => x.alive).length)
     } catch (e) {
-      console.log("Hubo un error en loadGarcas intentando en 30sec",e);
-      await sleep(30*1000);
+      console.log("Hubo un error en loadGarcas intentando en 30sec", e);
+      await sleep(30 * 1000);
       await loadGarcas();
     } /*   account
       .getGarcas()
@@ -148,7 +150,7 @@ export default function Content() {
         <Box display="flex" flexDirection="row" width="100%" mx="auto" m={3}>
           <Box right="40%">
             <Typography variant="h4" display="inline">
-              Total: {garcas.filter(x => x.alive).length}
+              Total: {totalUnfollowers}
             </Typography>
           </Box>
           <Box>
@@ -164,7 +166,7 @@ export default function Content() {
             </Button>
           </Box>
         </Box>
-        {keepGarcas(garcas)}
+        {keepGarcas()}
         {garcas
           .filter(x => x.alive)
           .map((i, index) => (
@@ -172,6 +174,7 @@ export default function Content() {
               userName={i.userName}
               alive={i.alive}
               removeElement={removeElement}
+	      updateGarcas={setTotalUnfollowers}
             />
           ))}
       </div>

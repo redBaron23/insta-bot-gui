@@ -51,7 +51,7 @@ const styles = {
 };
 
 export default function UserCard(props) {
-  const { userName, removeElement } = props;
+  const { userName, removeElement, updateGarcas } = props;
   const [src, setSrc] = useState(false);
   const [show, setShow] = useState(true);
   const [remove, setRemove] = useState(false);
@@ -86,7 +86,8 @@ export default function UserCard(props) {
       account
         .unfollow(userName)
         .then(bool => setShow(!bool))
-        .then(removeElement(userName))
+	.then(updateGarcas( count => count-1 ))
+        //.then(removeElement(userName))
         .catch(e => console.log(e));
     } else {
       newText = "Unfollow";
