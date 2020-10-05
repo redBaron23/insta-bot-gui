@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "space-between"
   }
 }));
-export default function Content() {
+export default function ContentGarcas() {
   const classes = useStyles();
   const [garcas, setGarcas] = useState([]);
   const [totalUnfollowers, setTotalUnfollowers] = useState(0);
@@ -25,11 +25,7 @@ export default function Content() {
   const [removePointer, setRemovePointer] = useState(0);
   const [buttonText, setButtonText] = useState("Unfollow All");
 
-  useEffect(() => {
-    loadGarcas();
-    updateButton();
-    localStorage.setItem("likes", "[]");
-  }, []);
+  useEffect(() => {}, []);
   const removeElement = userName => {
     setGarcas(oldGarcas => oldGarcas.filter(i => i.userName !== userName));
   };
@@ -65,15 +61,15 @@ export default function Content() {
     console.log("El nombre es", account.userName);
     if (buttonText.includes("Stop")) {
       //Lo paras
-      account.stopBot().then( res => {
-	setLoading(false);
+      account.stopBot().then(res => {
+        setLoading(false);
         setButtonText("Unfollow All");
-      })
+      });
     } else {
       //Lo activas
       account.startBot("dynamic", userNames).then(res => {
         setLoading(false);
-	setButtonText("Stop unfollow All")
+        setButtonText("Stop unfollow All");
       });
     }
   };
@@ -121,34 +117,8 @@ export default function Content() {
   return (
     <Grid container spacing={2}>
       <div styles={classes.root}>
-        <Box display="flex" flexDirection="row" width="100%" mx="auto" m={3}>
-          <Box right="40%">
-            <Typography variant="h4" display="inline">
-              Total: {totalUnfollowers}
-            </Typography>
-          </Box>
-          <Box>
-            <Button
-              onClick={handleButton}
-              disabled={loading}
-              variant="contained"
-              color="primary"
-              style={{ marginLeft: "60%" }}
-            >
-              {buttonText}
-            </Button>
-          </Box>
-        </Box>
-        {garcas
-          .filter(x => x.alive)
-          .map((i, index) => (
-            <UserCard
-              userName={i.userName}
-              alive={i.alive}
-              removeElement={removeElement}
-              updateGarcas={setTotalUnfollowers}
-            />
-          ))}
+
+
       </div>
     </Grid>
   );
