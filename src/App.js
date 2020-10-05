@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import "./App.css";
 import Main from "./views/Main";
 import LogIn from "./views/LogIn";
-import { ThemeProvider,createMuiTheme } from "@material-ui/core/styles";
-import { orange } from '@material-ui/core/colors';
+import { ThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import { orange } from "@material-ui/core/colors";
 import {
   BrowserRouter as Router,
   Redirect,
@@ -30,7 +30,7 @@ const SecuredRoute = props => {
 
 class App extends Component {
   state = {
-    logged: false
+    logged: localStorage.getItem("logged")
   };
 
   render() {
@@ -41,8 +41,13 @@ class App extends Component {
         danger: orange[500]
       }
     });
-    const handleLogout = () => this.setState({ logged: false });
+    const handleLogout = () => {
+      //Borro sesion
+      localStorage.clear();
+      this.setState({ logged: false });
+    };
     const handleLogin = () => {
+      localStorage.setItem("logged", true);
       this.setState({ logged: true });
     };
     return (

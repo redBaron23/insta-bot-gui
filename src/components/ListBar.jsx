@@ -15,11 +15,16 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function ListBar() {
+export default function ListBar(props) {
   const classes = useStyles();
+
+ // const { logged } = props;
+  const logged = localStorage.getItem("logged")
 
   return (
     <div className={classes.root}>
+
+      {logged && 
       <List component="nav">
         <ListItem button>
           <ListItemIcon>
@@ -33,7 +38,7 @@ export default function ListBar() {
           </ListItemIcon>
           <ListItemText primary="Bot" />
         </ListItem>
-      </List>
+      </List>}
     </div>
   );
 }

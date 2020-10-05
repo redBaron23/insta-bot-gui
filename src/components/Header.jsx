@@ -19,8 +19,9 @@ const styles = makeStyles(theme => ({
 
 const Header = (props) => {
   const classes = styles();
-  const { hide,onLogout } = props
+  const { logged,onLogout } = props
   const [mobileOpen, setMobileOpen] = useState(false);
+
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -37,7 +38,7 @@ const Header = (props) => {
       <nav className={classes.drawer}>
         <Hidden smUp implementation="css">
           <Menu
-	    hide={hide}
+	    logged={logged}
             variant="temporary"
             open={mobileOpen}
             onClose={handleDrawerToggle}

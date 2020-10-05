@@ -24,7 +24,7 @@ const Main = props => {
   const { onLogout } = props;
   return (
     <div className={classes.root}>
-      <Header onLogout={onLogout} />
+      <Header logged={true} onLogout={onLogout} />
       <div className={classes.content}>
         <div className={classes.toolbar}>
           <Grid container>
