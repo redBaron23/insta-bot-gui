@@ -5,6 +5,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import { RiUserUnfollowLine } from "react-icons/ri";
+import { FaRobot } from "react-icons/fa";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -13,7 +14,6 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper
   }
 }));
-
 
 export default function ListBar() {
   const classes = useStyles();
@@ -26,6 +26,12 @@ export default function ListBar() {
             <RiUserUnfollowLine />
           </ListItemIcon>
           <ListItemText primary="Unfollowers" />
+        </ListItem>
+        <ListItem button>
+          <ListItemIcon>
+            <FaRobot />
+          </ListItemIcon>
+          <ListItemText primary="Bot" />
         </ListItem>
       </List>
     </div>

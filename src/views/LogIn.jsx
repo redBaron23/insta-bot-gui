@@ -31,7 +31,7 @@ const LogIn = props => {
   const classes = styles();
   return (
     <div className={classes.root}>
-      <Header />
+      <Header hide={true}/>
       {sessionStorage.setItem("userName", "")}
       <div className={classes.content}>
         <div className={classes.toolbar}>

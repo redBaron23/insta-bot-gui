@@ -16,7 +16,7 @@ const styles = makeStyles(theme => ({
 
 const Menu = (props) => {
   const classes = styles();
-  const { variant, open, onClose } = props
+  const { hide,variant, open, onClose } = props
   return (
     <Drawer
       className={classes.drawer}
