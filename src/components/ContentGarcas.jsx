@@ -71,7 +71,7 @@ export default function ContentGarcas() {
       })
     } else {
       //Lo activas
-      account.startBot("dynamic", userNames).then(res => {
+      account.startUnfollowersBot(userNames).then(res => {
         setLoading(false);
 	setButtonText("Stop unfollow All")
       });

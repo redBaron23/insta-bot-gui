@@ -54,14 +54,33 @@ export class Account {
     }
   }
 
-  async startBot(type, userNames) {
+  async startBot(type) {
+    let data, json;
+    data = {
+      userName: this._userName,
+      password: this._passWord,
+      type: type
+    };
+    /*if (type === "dynamic" && bigFish) {
+      data.bigFish = bigFish;
+    }*/
+    json = JSON.stringify(data);
+    console.log("Lo que envio", json);
+    try {
+      let res = await axios.post(backUri + "/startbot", json);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  async startUnfollowersBot(userNames) {
     console.log("Nombres: ", userNames);
     try {
       let data, json;
       data = {
         userName: this._userName,
         password: this._passWord,
-        type: type
+        unfollowers: "[]",
+        type: "dynamic"
       };
       if (userNames) data.unfollowers = userNames;
       json = JSON.stringify(data);

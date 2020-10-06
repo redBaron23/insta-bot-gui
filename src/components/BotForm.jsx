@@ -74,17 +74,19 @@ const handleUserName = (e, setUserName) => {
   setUserName(value);
 };
 
-const handleButton = async (e,bigFish, type, random) => {
+const handleButton = async (e, bigFish, type, random) => {
   e.preventDefault();
-  let userName,password;
+  let userName, password, fish;
   userName = localStorage.getItem("userName");
   password = localStorage.getItem("password");
   let account = new Account(userName, password);
-  console.log("Tipo",type)
-  console.log("es random",random)
-  console.log("Bigfish",bigFish)
-  //
-  //await account.startBot(type);
+  console.log("Tipo", type);
+  console.log("es random", random);
+  console.log("Bigfish", bigFish);
+
+  //Si eligio un usuario
+  //if (!random) fish = bigFish;
+  await account.startBot(type);
 };
 export default function BotForm(props) {
   const { onLogin } = props;
@@ -139,6 +141,7 @@ export default function BotForm(props) {
             <Box>
               <FormControlLabel
                 checked={isChecked}
+		disabled
                 onChange={e => handleCheckBox(setIsChecked, setTextStatus)}
                 control={<Checkbox name="random" />}
                 label="Random"
@@ -166,7 +169,7 @@ export default function BotForm(props) {
             type="submit"
             fullWidth
             variant="contained"
-            onClick={e => handleButton(e,userName, radiusValue, isChecked)}
+            onClick={e => handleButton(e, userName, radiusValue, isChecked)}
             color="primary"
             disabled={!isChecked && userName.length < 6}
             className={classes.submit}
