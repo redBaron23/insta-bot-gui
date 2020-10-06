@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Grid, makeStyles, Hidden, Box, CssBaseline } from "@material-ui/core";
 import UserCard from "../components/UserCard";
 import NavBar from "../components/NavBar";
-import Content from "../components/Content";
+import ContentGarcas from "../components/ContentGarcas";
+import ContentBot from "../components/ContentBot";
 import Header from "../components/Header";
 
 const styles = makeStyles(theme => ({
@@ -21,14 +22,16 @@ const styles = makeStyles(theme => ({
 
 const Main = props => {
   const classes = styles();
-  const { onLogout } = props;
+  const { page,onLogout } = props;
   return (
     <div className={classes.root}>
       <Header logged={true} onLogout={onLogout} />
       <div className={classes.content}>
         <div className={classes.toolbar}>
           <Grid container>
-            <Content />
+	    { page === "bot" && <ContentBot /> }
+	    { page === "unfollowers" && <ContentGarcas /> }
+	    { page === "home" && <ContentGarcas /> }
           </Grid>
         </div>
       </div>

@@ -7,8 +7,14 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
 import Box from "@material-ui/core/Box";
-import { FaPowerOff } from "react-icons/fa"
+import { FaPowerOff } from "react-icons/fa";
 import Typography from "@material-ui/core/Typography";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -53,6 +59,9 @@ const styles = makeStyles(theme => ({
   }
 }));
 
+const handleRadiusChange = (event, setValue) => {
+  setValue(event.target.value);
+};
 export default function BotForm(props) {
   const { onLogin } = props;
   const classes = styles();
@@ -60,6 +69,7 @@ export default function BotForm(props) {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
   const [usernameError, setUsernameError] = useState(false);
+  const [radiusValue, setRadiusValue] = useState(false);
   const [openForm, setOpenForm] = useState(false);
 
   const [loading, setLoading] = useState(false);
@@ -67,154 +77,54 @@ export default function BotForm(props) {
   const [notificationMessage, setNotificationMessage] = useState("");
   const [notificationSeverity, setNotificationSeverity] = useState("");
 
-  const handleClick = () => {
-    setOpenNotification(true);
-  };
-
-  const handleCloseForm = () => {
-    setOpenForm(false);
-  };
-
-  const handleCloseNotification = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpenNotification(false);
-  };
-
-  const handleCredentials = e => {
-    const { name, value } = e.target;
-    name === "username" ? setUsername(value) : setPassword(value);
-  };
-  const customAlert = (message, type) => {
-    setNotificationMessage(message);
-    setNotificationSeverity(type);
-    setOpenNotification(true);
-  };
-  const handleSubmit = e => {
-    if (!loading) {
-      setLoading(true);
-      let status = true;
-      //No refresh
-      e.preventDefault();
-      let account = { username, password };
-      if (account.username && account.password) {
-        status = isMatch(account);
-      } else {
-        let message = "No username or password detected";
-        !account.username ? setUsernameError(true) : setUsernameError(false);
-        !account.password ? setPasswordError(true) : setPasswordError(false);
-
-        customAlert(message, "error");
-      }
-    }
-  };
-
-  const handleSendCode = code => {
-    const userName = localStorage.getItem("userName");
-    const password = localStorage.getItem("password");
-    let account = new Account(userName, password);
-    account
-      .initCode(code)
-      .then(res => keepAccount(res, customAlert, username))
-      .catch(e => console.log(e));
-  };
-  const keepAccount = async (data, customAlert, userName) => {
-    if (data === 402) {
-      //Necesito codigo de verificacion
-      setOpenForm(true);
-      console.log("Dame el codigo paper");
-    } else if (data === 401) {
-      customAlert("Wrong password or username", "error");
-    } else {
-      console.log("RESPUESTA", data);
-      localStorage.setItem("account", JSON.stringify(data));
-      sessionStorage.setItem("userName", userName);
-      //Logged
-      onLogin();
-    }
-    setLoading(false);
-  };
-  const isMatch = async acc => {
-    //Send to backend
-    let backend = true;
-
-    //LOGEADO
-    localStorage.setItem("userName", acc.username);
-    localStorage.setItem("password", acc.password);
-    let account = new Account(username, password);
-    try {
-      let res = await account.init();
-      keepAccount(res.data, customAlert, account.userName);
-      res.status !== 200 && console.log("El error", res);
-    } catch (e) {
-      console.log("El err", e);
-    }
-  };
-
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <FormDialog
-        show={openForm}
-        onSend={handleSendCode}
-        onClose={handleCloseForm}
-      />
-      <Snackbar
-        open={openNotification}
-        autoHideDuration={6000}
-        onClose={handleCloseNotification}
-      >
-        <Alert
-          onClose={handleCloseNotification}
-          severity={notificationSeverity}
-        >
-          {notificationMessage}
-        </Alert>
+      <Snackbar autoHideDuration={6000}>
+        <Alert severity={notificationSeverity}>{notificationMessage}</Alert>
       </Snackbar>
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
           <FaPowerOff />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Log in
+          Este lo que hace es bla bla bla y bla bla bla, bla bla blald;asld;a
+          slda;s blaldalsldasldasl ald asldla sldals dlas ldals lasl l
         </Typography>
         <form className={classes.form} noValidate>
-
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="username"
-            label="Username"
-            name="username"
-            error={usernameError}
-            autoComplete="username"
-            onChange={handleCredentials}
-            autoFocus
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            error={passwordError}
-            onChange={handleCredentials}
-            autoComplete="current-password"
-          />
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Gender</FormLabel>
+            <RadioGroup
+              aria-label="gender"
+              name="gender1"
+              value={radiusValue}
+              onChange={e => handleRadiusChange(e, setRadiusValue)}
+            >
+              <FormControlLabel
+                value="female"
+                control={<Radio />}
+                label="Female"
+              />
+              <FormControlLabel value="male" control={<Radio />} label="Male" />
+              <FormControlLabel
+                value="other"
+                control={<Radio />}
+                label="Other"
+              />
+              <FormControlLabel
+                value="disabled"
+                disabled
+                control={<Radio />}
+                label="(Disabled option)"
+              />
+            </RadioGroup>
+          </FormControl>
           <Button
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
             disabled={username.length < 6 || password.length < 6 || loading}
-            onClick={handleSubmit}
             className={classes.submit}
           >
             {"Log"}

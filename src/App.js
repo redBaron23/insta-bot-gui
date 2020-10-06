@@ -57,9 +57,18 @@ class App extends Component {
         <Router>
           <Switch>
             <SecuredRoute
-              path="/home"
+              path="/unfollowers"
               isLogged={logged}
-              render={props => <Main onLogout={handleLogout} {...props} />}
+              render={props => (
+                <Main page="unfollowers" onLogout={handleLogout} {...props} />
+              )}
+            ></SecuredRoute>
+            <SecuredRoute
+              path="/bot"
+              isLogged={logged}
+              render={props => (
+                <Main page="bot" onLogout={handleLogout} {...props} />
+              )}
             ></SecuredRoute>
             <Route
               path="/"
@@ -67,7 +76,7 @@ class App extends Component {
                 !logged ? (
                   <LogIn onLogin={handleLogin} {...props} />
                 ) : (
-                  <Redirect to="/home" />
+                  <Redirect to="/bot" />
                 )
               }
             ></Route>

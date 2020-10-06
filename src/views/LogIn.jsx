@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Grid, makeStyles, Hidden, Box, CssBaseline } from "@material-ui/core";
 import NavBar from "../components/NavBar";
 import Menu from "../components/Menu";
-import Content from "../components/Content";
 import LoginForm from "../components/LoginForm";
 import Header from "../components/Header";
 import UserCard from "../components/UserCard";
