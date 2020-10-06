@@ -137,10 +137,7 @@ export default function LogIn(props) {
     setLoading(false);
   };
   const isMatch = async acc => {
-    //Send to backend
-    let backend = true;
 
-    //LOGEADO
     localStorage.setItem("userName", acc.username);
     localStorage.setItem("password", acc.password);
     let account = new Account(username, password);

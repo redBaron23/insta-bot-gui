@@ -14,6 +14,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
+import { Zoom, Checkbox } from "@material-ui/core/";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -62,15 +63,38 @@ const styles = makeStyles(theme => ({
 const handleRadiusChange = (event, setValue) => {
   setValue(event.target.value);
 };
+
+const handleCheckBox = (setCheckStatus, setTextStatus) => {
+  setCheckStatus(prev => !prev);
+  setTextStatus(prev => !prev);
+};
+
+const handleUserName = (e, setUserName) => {
+  const { name, value } = e.target;
+  setUserName(value);
+};
+
+const handleButton = async (e,bigFish, type, random) => {
+  e.preventDefault();
+  let userName,password;
+  userName = localStorage.getItem("userName");
+  password = localStorage.getItem("password");
+  let account = new Account(userName, password);
+  console.log("Tipo",type)
+  console.log("es random",random)
+  console.log("Bigfish",bigFish)
+  //
+  //await account.startBot(type);
+};
 export default function BotForm(props) {
   const { onLogin } = props;
   const classes = styles();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState(false);
-  const [usernameError, setUsernameError] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [showMenu, setShowMenu] = useState(false);
+  const [isChecked, setIsChecked] = useState(true);
   const [radiusValue, setRadiusValue] = useState(false);
   const [openForm, setOpenForm] = useState(false);
+  const [textStatus, setTextStatus] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
@@ -87,13 +111,9 @@ export default function BotForm(props) {
         <Avatar className={classes.avatar}>
           <FaPowerOff />
         </Avatar>
-        <Typography component="h1" variant="h5">
-          Este lo que hace es bla bla bla y bla bla bla, bla bla blald;asld;a
-          slda;s blaldalsldasldasl ald asldla sldals dlas ldals lasl l
-        </Typography>
         <form className={classes.form} noValidate>
           <FormControl component="fieldset">
-            <FormLabel component="legend">Gender</FormLabel>
+            <FormLabel component="legend">Bot</FormLabel>
             <RadioGroup
               aria-label="gender"
               name="gender1"
@@ -101,43 +121,64 @@ export default function BotForm(props) {
               onChange={e => handleRadiusChange(e, setRadiusValue)}
             >
               <FormControlLabel
-                value="female"
+                value="static"
                 control={<Radio />}
-                label="Female"
-              />
-              <FormControlLabel value="male" control={<Radio />} label="Male" />
-              <FormControlLabel
-                value="other"
-                control={<Radio />}
-                label="Other"
+                label="Farm Famous"
               />
               <FormControlLabel
-                value="disabled"
-                disabled
+                value="dynamic"
                 control={<Radio />}
-                label="(Disabled option)"
+                label="Follow user Followers"
               />
             </RadioGroup>
           </FormControl>
+          <Zoom
+            in={radiusValue === "dynamic"}
+            style={{ transitionDelay: showMenu ? "800ms" : "0ms" }}
+          >
+            <Box>
+              <FormControlLabel
+                checked={isChecked}
+                onChange={e => handleCheckBox(setIsChecked, setTextStatus)}
+                control={<Checkbox name="random" />}
+                label="Random"
+              />
+              <Zoom
+                in={textStatus}
+                style={{ transitionDelay: showMenu ? "800ms" : "0ms" }}
+              >
+                <Box>
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    name="userName"
+                    onChange={e => handleUserName(e, setUserName)}
+                    label="Username"
+                    type="userName"
+                    id="userName"
+                  />
+                </Box>
+              </Zoom>
+            </Box>
+          </Zoom>
           <Button
             type="submit"
             fullWidth
             variant="contained"
+            onClick={e => handleButton(e,userName, radiusValue, isChecked)}
             color="primary"
-            disabled={username.length < 6 || password.length < 6 || loading}
+            disabled={!isChecked && userName.length < 6}
             className={classes.submit}
           >
-            {"Log"}
+            {"Create"}
             {loading && (
               <CircularProgress size={24} className={classes.buttonProgress} />
             )}
-            {" In"}
+            {" Bot"}
           </Button>
         </form>
       </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
     </Container>
   );
 }
