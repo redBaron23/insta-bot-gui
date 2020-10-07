@@ -45,7 +45,9 @@ export class Account {
     data = {
       userName: this._userName,
       password: this._passWord,
-      type: type
+      type: type,
+      bigFish:userName,
+      ratio:ratio
     };
     if (type === "dynamic" && !ratio) data.ratio=1.5;
     json = JSON.stringify(data);

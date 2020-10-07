@@ -156,7 +156,6 @@ export default function BotForm(props) {
               <Box component="div" display="inline">
                   <FormControlLabel
                     checked={isChecked}
-                    disabled
                     onChange={e => handleCheckBox(setIsChecked, setTextStatus)}
                     control={<Checkbox name="random" />}
                     label="Random User followers"
