@@ -69,34 +69,36 @@ const handleCheckBox = (setCheckStatus, setTextStatus) => {
   setTextStatus(prev => !prev);
 };
 
-const handleUserName = (e, setUserName) => {
+const handleTextField = (e, setText, view) => {
   const { name, value } = e.target;
-  setUserName(value);
+  setText(value);
+  console.log(view);
 };
-
-const handleButton = async (e, bigFish, type, random) => {
+const handleButton = async (e, type, random,ratio,userName) => {
   e.preventDefault();
-  let userName, password, fish;
-  userName = localStorage.getItem("userName");
-  password = localStorage.getItem("password");
-  let account = new Account(userName, password);
+  let myUserName, myPassword, fish;
+  myUserName = localStorage.getItem("userName");
+  myPassword = localStorage.getItem("password");
+  let account = new Account(myUserName, myPassword);
   console.log("Tipo", type);
   console.log("es random", random);
-  console.log("Bigfish", bigFish);
 
   //Si eligio un usuario
   //if (!random) fish = bigFish;
-  await account.startBot(type);
+  await account.startBot(type,ratio,userName);
 };
 export default function BotForm(props) {
   const { onLogin } = props;
   const classes = styles();
   const [userName, setUserName] = useState("");
+  const [ratio, setRatio] = useState("");
   const [showMenu, setShowMenu] = useState(false);
+  const [isRatioChecked, setIsRatioChecked] = useState(false);
   const [isChecked, setIsChecked] = useState(true);
-  const [radiusValue, setRadiusValue] = useState(false);
+  const [radiusValue, setRadiusValue] = useState("static");
   const [openForm, setOpenForm] = useState(false);
   const [textStatus, setTextStatus] = useState(false);
+  const [ratioTextStatus, setRatioTextStatus] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
@@ -123,6 +125,7 @@ export default function BotForm(props) {
               onChange={e => handleRadiusChange(e, setRadiusValue)}
             >
               <FormControlLabel
+		selected
                 value="static"
                 control={<Radio />}
                 label="Farm Famous"
@@ -138,38 +141,70 @@ export default function BotForm(props) {
             in={radiusValue === "dynamic"}
             style={{ transitionDelay: showMenu ? "800ms" : "0ms" }}
           >
-            <Box>
-              <FormControlLabel
-                checked={isChecked}
-		disabled
-                onChange={e => handleCheckBox(setIsChecked, setTextStatus)}
-                control={<Checkbox name="random" />}
-                label="Random"
-              />
-              <Zoom
-                in={textStatus}
-                style={{ transitionDelay: showMenu ? "800ms" : "0ms" }}
-              >
-                <Box>
-                  <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    name="userName"
-                    onChange={e => handleUserName(e, setUserName)}
-                    label="Username"
-                    type="userName"
-                    id="userName"
+            <div style={{ width: "100%" }}>
+              <Box component="div" display="inline">
+                <FormControlLabel
+                  checked={isRatioChecked}
+                  disabled
+                  onChange={e =>
+                    handleCheckBox(setIsChecked, setRatioTextStatus)
+                  }
+                  control={<Checkbox name="ratio" />}
+                  label="Ratio"
+                />
+              </Box>
+              <Box component="div" display="inline">
+                  <FormControlLabel
+                    checked={isChecked}
+                    disabled
+                    onChange={e => handleCheckBox(setIsChecked, setTextStatus)}
+                    control={<Checkbox name="random" />}
+                    label="Random User followers"
                   />
-                </Box>
-              </Zoom>
+              </Box>
+            </div>
+          </Zoom>
+          <Zoom
+            in={ratioTextStatus}
+            style={{ transitionDelay: showMenu ? "800ms" : "0ms" }}
+          >
+            <Box>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="ratio"
+                onChange={e => handleTextField(e, setRatio, ratio)}
+                label="Ratio"
+                type="ratio"
+                id="ratio"
+              />
             </Box>
           </Zoom>
+
+          <Zoom
+            in={textStatus}
+            style={{ transitionDelay: showMenu ? "800ms" : "0ms" }}
+          >
+            <Box>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="userName"
+                onChange={e => handleTextField(e, setUserName, userName)}
+                label="Username"
+                type="userName"
+                id="userName"
+              />
+            </Box>
+          </Zoom>
+
           <Button
             type="submit"
             fullWidth
             variant="contained"
-            onClick={e => handleButton(e, userName, radiusValue, isChecked)}
+            onClick={e => handleButton(e, radiusValue, isChecked,ratio,userName)}
             color="primary"
             disabled={!isChecked && userName.length < 6}
             className={classes.submit}

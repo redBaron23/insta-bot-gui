@@ -19,22 +19,6 @@ export class Account {
     this._passWord = passWord;
   }
 
-  async countFollows(userName) {
-    let following = 100,
-      followers = 100;
-    const URL = "https://www.instagram.com/" + userName + "/?__a=1";
-
-    const response = await this.getData(URL);
-    try {
-      following = response.data.graphql.user.edge_follow.count;
-      followers = response.data.graphql.user.edge_followed_by.count;
-    } catch (e) {
-      console.log(e);
-      console.log("Setting defaults");
-    } finally {
-      return [followers, following];
-    }
-  }
   async stopBot() {
     try {
       let data, json;
@@ -54,16 +38,16 @@ export class Account {
     }
   }
 
-  async startBot(type) {
+
+  async startBot(type,ratio,userName) {
+    //Username = donde saco los usuarios a seguir
     let data, json;
     data = {
       userName: this._userName,
       password: this._passWord,
       type: type
     };
-    /*if (type === "dynamic" && bigFish) {
-      data.bigFish = bigFish;
-    }*/
+    if (type === "dynamic" && !ratio) data.ratio=1.5;
     json = JSON.stringify(data);
     console.log("Lo que envio", json);
     try {
