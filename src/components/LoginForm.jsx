@@ -121,6 +121,7 @@ export default function LogIn(props) {
       .catch(e => console.log(e));
   };
   const keepAccount = async (data, customAlert, userName) => {
+    console.log("El codigo es",data);
     if (data === 402) {
       //Necesito codigo de verificacion
       setOpenForm(true);

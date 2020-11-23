@@ -10,7 +10,7 @@ const default_quantity = 10000;
 const errTime = {
   init: 1000 * 3600 * 2,
   400: 1000 * 3600 * 0.3,
-  429: 1000 * 3600 * 12
+  429: 1000 * 3600 * 12,
 };
 
 export class Account {
@@ -24,7 +24,7 @@ export class Account {
       let data, json;
       data = {
         userName: this._userName,
-        password: this._passWord
+        password: this._passWord,
       };
       json = JSON.stringify(data);
       console.log("el user", this._userName);
@@ -38,18 +38,17 @@ export class Account {
     }
   }
 
-
-  async startBot(type,ratio,userName) {
+  async startBot(type, ratio, userName) {
     //Username = donde saco los usuarios a seguir
     let data, json;
     data = {
       userName: this._userName,
       password: this._passWord,
       type: type,
-      bigFish:userName,
-      ratio:ratio
+      bigFish: userName,
+      ratio: ratio,
     };
-    if (type === "dynamic" && !ratio) data.ratio=1.5;
+    if (type === "dynamic" && !ratio) data.ratio = 1.5;
     json = JSON.stringify(data);
     console.log("Lo que envio", json);
     try {
@@ -66,7 +65,7 @@ export class Account {
         userName: this._userName,
         password: this._passWord,
         unfollowers: "[]",
-        type: "dynamic"
+        type: "dynamic",
       };
       if (userNames) data.unfollowers = userNames;
       json = JSON.stringify(data);
@@ -108,12 +107,12 @@ export class Account {
       acc = {
         code: code,
         userName: this._userName,
-        password: this._passWord
+        password: this._passWord,
       };
       json = JSON.stringify(acc);
       console.log(backUri + "/login");
       let res = await axios.post(backUri + "/login", json);
-      console.log("res", res);
+      console.log("res del login", res);
       return res.data;
     } catch (e) {
       console.log(e);
@@ -124,17 +123,17 @@ export class Account {
       let acc, json;
       acc = {
         userName: this._userName,
-        password: this._passWord
+        password: this._passWord,
       };
       json = JSON.stringify(acc);
       console.log(backUri + "/login");
       axios
         .post(backUri + "/login", json)
-        .then(res => {
+        .then((res) => {
           console.log("res", res);
           resolve(res);
         })
-        .catch(e => reject(e));
+        .catch((e) => reject(e));
     });
   }
   async update() {
@@ -178,11 +177,11 @@ export class Account {
 
       console.log(backUri + "/login");
       axios(backUri + "/unfollowers?userName=" + this._userName)
-        .then(res => {
+        .then((res) => {
           console.log("Garcas son", res.data);
           resolve(res.data);
         })
-        .catch(e => reject(e));
+        .catch((e) => reject(e));
     });
   }
 
@@ -191,25 +190,10 @@ export class Account {
       let myAccount = await this.export();
       let req = {
         cookies: myAccount.cookies,
-        userName: userName
+        userName: userName,
       };
       let res = await axios.post(backUri + "/follow", req);
       return res.status === 200;
-    } catch (e) {
-      console.log(e);
-      return false;
-    }
-  }
-
-  async stopBot() {
-    try {
-      let req = {
-        userName: this._userName,
-        password: this._passWord
-      };
-      let res = await axios.post(backUri + "/stopbot", req);
-      let json = JSON.parse(res.data);
-      return json;
     } catch (e) {
       console.log(e);
       return false;
@@ -221,7 +205,7 @@ export class Account {
       let myAccount = await this.export();
       let req = {
         cookies: myAccount.cookies,
-        userName: userName
+        userName: userName,
       };
       let res = await axios.post(backUri + "/unfollow", req);
       return res.status === 200;
@@ -236,7 +220,7 @@ export class Account {
       let myAccount = await this.export();
       let req = {
         account: myAccount,
-        users: users
+        users: users,
       };
       let res = await axios.post(backUri + "/unfollowUsers", req);
       return res.status === 200;
@@ -251,7 +235,7 @@ export class Account {
       console.log("Comenzando tarea");
       let myAccount = await this.export();
       let req = {
-        account: myAccount
+        account: myAccount,
       };
       let res = await axios.post(backUri + "/unfollow", req);
       return res.status === 200;
@@ -330,10 +314,10 @@ export class Account {
       const followers = await this.getUserFollowers(userName);
       const following = await this.getUserFollowing(userName);
       //No include following in followers
-      const users = following.filter(i => !followers.includes(i));
+      const users = following.filter((i) => !followers.includes(i));
 
       const garcas = whiteList
-        ? users.filter(i => !whiteList.includes(i))
+        ? users.filter((i) => !whiteList.includes(i))
         : users;
       return garcas;
     } catch (e) {
@@ -365,10 +349,10 @@ export class Account {
     }
 
     const array = data.edges;
-    const users = array.map(i => i.node.username);
+    const users = array.map((i) => i.node.username);
     return {
       users,
-      nextCursor
+      nextCursor,
     };
   }
 
@@ -387,12 +371,12 @@ export class Account {
       "X-Requested-With": "XMLHttpRequest",
       Connection: "close",
       Referer: "https://www.instagram.com/",
-      Host: "www.instagram.com"
+      Host: "www.instagram.com",
     };
     const options = {
       url: URL,
       method: "GET",
-      headers: HEADERS
+      headers: HEADERS,
     };
     try {
       const response = await axios(options);
@@ -435,7 +419,7 @@ export class Account {
 
     const { followers, following } = await this.getAccountData();
 
-    const users = followers.filter(i => !following.includes(i));
+    const users = followers.filter((i) => !following.includes(i));
 
     return users;
   }
@@ -443,7 +427,7 @@ export class Account {
   async getMutuals() {
     const { followers, following } = await this.getAccountData();
 
-    const users = followers.filter(i => following.includes(i));
+    const users = followers.filter((i) => following.includes(i));
 
     return users;
   }
@@ -464,7 +448,7 @@ export class Account {
 
     return {
       followers,
-      following
+      following,
     };
   }
 }

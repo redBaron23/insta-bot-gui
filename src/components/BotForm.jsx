@@ -26,6 +26,8 @@ import FormDialog from "./FormDialog";
 import { Account } from "../fun/account";
 
 function Alert(props) {
+  
+
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
