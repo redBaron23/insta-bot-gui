@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Proptypes from "prop-types";
 import Avatar from "@material-ui/core/Avatar";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -12,6 +13,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
+import UserCard from "./UserCard";
+import FormDialog from "./FormDialog";
+
+import { Account } from "../fun/account";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -25,7 +30,6 @@ function Copyright() {
         redbaron23
       </Link>{" "}
       {new Date().getFullYear()}
-      {"."}
     </Typography>
   );
 }
@@ -56,13 +60,19 @@ export default function LogIn(props) {
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState(false);
   const [usernameError, setUsernameError] = useState(false);
+  const [openForm, setOpenForm] = useState(false);
 
-  const [openNotification, setOpenNotification] = React.useState(false);
-  const [notificationMessage, setNotificationMessage] = React.useState("");
-  const [notificationSeverity, setNotificationSeverity] = React.useState("");
+  const [loading, setLoading] = useState(false);
+  const [openNotification, setOpenNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
+  const [notificationSeverity, setNotificationSeverity] = useState("");
 
   const handleClick = () => {
     setOpenNotification(true);
+  };
+
+  const handleCloseForm = () => {
+    setOpenForm(false);
   };
 
   const handleCloseNotification = (event, reason) => {
@@ -77,48 +87,78 @@ export default function LogIn(props) {
     const { name, value } = e.target;
     name === "username" ? setUsername(value) : setPassword(value);
   };
-
+  const customAlert = (message, type) => {
+    setNotificationMessage(message);
+    setNotificationSeverity(type);
+    setOpenNotification(true);
+  };
   const handleSubmit = e => {
-    let status = true;
-    //No refresh
-    e.preventDefault();
-    let account = { username, password };
-    if (account.username && account.password) {
-      status = isMatch(account);
-    } else {
-      let message = "No username or password detected";
-      !account.username ? setUsernameError(true) : setUsernameError(false);
-      !account.password ? setPasswordError(true) : setPasswordError(false);
+    if (!loading) {
+      setLoading(true);
+      let status = true;
+      //No refresh
+      e.preventDefault();
+      let account = { username, password };
+      if (account.username && account.password) {
+        status = isMatch(account);
+      } else {
+        let message = "No username or password detected";
+        !account.username ? setUsernameError(true) : setUsernameError(false);
+        !account.password ? setPasswordError(true) : setPasswordError(false);
 
-      setNotificationMessage(message);
-      setNotificationSeverity("error");
-      setOpenNotification(true);
+        customAlert(message, "error");
+      }
     }
   };
 
-  const isMatch = ( account ) => {
-    //Send to backend
-    let backend = true;
-
-    if (backend) {
-      //LOGEADO
-      console.log('logead')
-      onLogin()
+  const handleSendCode = code => {
+    const userName = localStorage.getItem("userName");
+    const password = localStorage.getItem("password");
+    let account = new Account(userName, password);
+    account
+      .initCode(code)
+      .then(res => keepAccount(res, customAlert, username))
+      .catch(e => console.log(e));
+  };
+  const keepAccount = async (data, customAlert, userName) => {
+    console.log("El codigo es",data);
+    if (data === 402) {
+      //Necesito codigo de verificacion
+      setOpenForm(true);
+      console.log("Dame el codigo paper");
+    } else if (data === 401) {
+      customAlert("Wrong password or username", "error");
     } else {
-      let message = 'Incorrect username or password'
+      console.log("RESPUESTA", data);
+      localStorage.setItem("account", JSON.stringify(data));
+      sessionStorage.setItem("userName", userName);
+      //Logged
+      onLogin();
+    }
+    setLoading(false);
+  };
+  const isMatch = async acc => {
 
-      setUsernameError(true);
-      setPasswordError(true)
-      setNotificationMessage(message)
-      setNotificationSeverity('error')
-      setOpenNotification(true);
-      return false;
+    localStorage.setItem("userName", acc.username);
+    localStorage.setItem("password", acc.password);
+    let account = new Account(username, password);
+    try {
+      let res = await account.init();
+      keepAccount(res.data, customAlert, account.userName);
+      res.status !== 200 && console.log("El error", res);
+    } catch (e) {
+      console.log("El err", e);
     }
   };
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
+      <FormDialog
+        show={openForm}
+        onSend={handleSendCode}
+        onClose={handleCloseForm}
+      />
       <Snackbar
         open={openNotification}
         autoHideDuration={6000}
@@ -170,11 +210,15 @@ export default function LogIn(props) {
             fullWidth
             variant="contained"
             color="primary"
-            //onClick={() => success()}
+            disabled={username.length < 6 || password.length < 6 || loading}
             onClick={handleSubmit}
             className={classes.submit}
           >
-            Log In
+            {"Log"}
+            {loading && (
+              <CircularProgress size={24} className={classes.buttonProgress} />
+            )}
+            {" In"}
           </Button>
         </form>
       </div>

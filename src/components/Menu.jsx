@@ -1,6 +1,6 @@
 import React from "react";
 import { makeStyles, Drawer, Divider } from "@material-ui/core";
-import ListBar from "./ListBar";
+import ListBar from "./ListBar"
 const drawerWidth = 240;
 
 const styles = makeStyles(theme => ({
@@ -16,7 +16,7 @@ const styles = makeStyles(theme => ({
 
 const Menu = (props) => {
   const classes = styles();
-  const { variant, open, onClose } = props
+  const { logged,variant, open, onClose } = props
   return (
     <Drawer
       className={classes.drawer}
@@ -30,7 +30,7 @@ const Menu = (props) => {
     >
       <div className={classes.toolbar}></div>
       <Divider />
-      <ListBar />
+      <ListBar logged={logged}/>
     </Drawer>
   );
 };
